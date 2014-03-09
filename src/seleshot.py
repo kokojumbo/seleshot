@@ -21,7 +21,8 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import NoSuchElementException
 from types import MethodType
 
-def create(driver = None):
+
+def create(driver=None):
     # hiding everything from the world, buahaha ^_^
     def check_url(url):
         if not isinstance(url, basestring):
@@ -55,7 +56,7 @@ def create(driver = None):
     def translate(txt):
         return txt.translate(string.maketrans(':/', '--'))
 
-    def get_basename(path, url, filename = None):
+    def get_basename(path, url, filename=None):
         if filename:
             if filename[-4:] == ".png":
                 filename = filename[:-4].rpartition(os.sep)[-1]
@@ -79,7 +80,7 @@ def create(driver = None):
         for f in files:
             if f.find(prefix) != -1:
                 highlighted_files.append(f)
-        highlighted_files.sort(key = lambda s: len(s))
+        highlighted_files.sort(key=lambda s: len(s))
         if highlighted_files:
             indexOfNumber = highlighted_files[-1].find('[') + 1
             filename += "-" + prefix + "[" + str(int(highlighted_files[-1][indexOfNumber:-5]) + 1) + "].png"
@@ -87,22 +88,22 @@ def create(driver = None):
             filename += "-" + prefix + "[1].png";
         return filename
 
-    def get_filename(xpath, basename, web_element, index = None):
+    def get_filename(xpath, basename, web_element, index=None):
         xpath = re.sub(r'[/]+', "_", xpath)
         xpath2 = re.sub(r'[\\/:"*?<>|]+', "", xpath)
         filename = [basename, "-", xpath2]
 
         if xpath[-1] == '*':
             filename.append(web_element.tag_name)
-#             filename.append("[")
-#             filename.append(str(index + 1))
-#             filename.append("]")
+        #             filename.append("[")
+        #             filename.append(str(index + 1))
+        #             filename.append("]")
         elif xpath[-1] == ']':
             pass
-#         else:
-#             filename.append("[")
-#             filename.append(str(index + 1))
-#             filename.append("]")
+        #         else:
+        #             filename.append("[")
+        #             filename.append(str(index + 1))
+        #             filename.append("]")
 
         filename.append(".png")
 
@@ -151,8 +152,8 @@ def create(driver = None):
 
     def draw_lines_between_elements(image, element1_box, element2_box):
         draw = ImageDraw.Draw(image)
-        draw.line((element1_box[2], element1_box[1], element2_box[0], element2_box[1]), fill = (0, 100, 0))
-        draw.line((element1_box[2], element1_box[3], element2_box[0], element2_box[3]), fill = (0, 100, 0))
+        draw.line((element1_box[2], element1_box[1], element2_box[0], element2_box[1]), fill=(0, 100, 0))
+        draw.line((element1_box[2], element1_box[3], element2_box[0], element2_box[3]), fill=(0, 100, 0))
 
     def get_ids(driver, tempfd, basename, ids):
         retval = []
@@ -189,7 +190,7 @@ def create(driver = None):
 
         return retval
 
-    def highlight(driver, url, ids = None, xpaths = None, color = '', frame = False, text = '', arrow = False):
+    def highlight(driver, url, ids=None, xpaths=None, color='', frame=False, text='', arrow=False):
         ids = check_ids(ids)
         xpaths = check_xpaths(xpaths)
         path = os.getcwd()
@@ -216,7 +217,7 @@ def create(driver = None):
 
         driver.save_screenshot(filename)
 
-    def zoom_in(driver, ids = None, xpaths = None, zoom_factor = 2):
+    def zoom_in(driver, ids=None, xpaths=None, zoom_factor=2):
         ids = check_ids(ids)
         xpaths = check_xpaths(xpaths)
         path = os.getcwd()
@@ -235,19 +236,22 @@ def create(driver = None):
 
         extra_x_size = 100
         element_border_size = 5
-        new_image = Image.new('RGB', (calculate_new_image_size(image, web_elements, zoom_factor, extra_x_size, element_border_size)))
+        new_image = Image.new('RGB', (
+            calculate_new_image_size(image, web_elements, zoom_factor, extra_x_size, element_border_size)))
         new_image.paste(image, (0, 0))
 
         offset_y = 10
         for i in xrange(len(web_elements)):
             box = get_web_element_box_size(web_elements[i])
-            box = (box[0] - element_border_size, box[1] - element_border_size, box[2] + element_border_size, box[3] + element_border_size)
+            box = (box[0] - element_border_size, box[1] - element_border_size, box[2] + element_border_size,
+                   box[3] + element_border_size)
             region = image.crop(box)
             new_size = ((region.size[0]) * zoom_factor, (region.size[1]) * zoom_factor)
             region = region.resize(new_size)
             new_image.paste(region, (image.size[0] + extra_x_size / 2, offset_y))
 
-            box2 = (image.size[0] + extra_x_size / 2, offset_y, image.size[0] + extra_x_size / 2 + new_size[0], offset_y + new_size[1])
+            box2 = (image.size[0] + extra_x_size / 2, offset_y, image.size[0] + extra_x_size / 2 + new_size[0],
+                    offset_y + new_size[1])
             draw_lines_between_elements(new_image, get_web_element_box_size(web_elements[i]), box2)
 
             offset_y += (web_elements[i].size['height'] + element_border_size * 2) * zoom_factor + 10
@@ -258,7 +262,7 @@ def create(driver = None):
         def __init__(self, driver):
             self.driver = driver
 
-        def get_screen(self, url = None, ids = None, xpaths = None, path = None, filename = None):
+        def get_screen(self, url=None, ids=None, xpaths=None, path=None, filename=None):
             '''
             Get specified screen(s)
 
@@ -277,7 +281,7 @@ def create(driver = None):
 
             return get_screen(self.driver, ids, xpaths, path, filename)
 
-        def get_data(self, url, conf = None, filename = None):
+        def get_data(self, url, conf=None, filename=None):
             '''
             Get information about elements on a web page.
 
@@ -292,7 +296,7 @@ def create(driver = None):
 
             return get_data(self.driver, conf, filename)
 
-        def highlight(self, url, ids = None, xpaths = None, color = '', frame = False, text = '', arrow = False):
+        def highlight(self, url, ids=None, xpaths=None, color='', frame=False, text='', arrow=False):
             '''
             Highlight specified elements on a page
 
@@ -311,7 +315,7 @@ def create(driver = None):
 
             return "TODO"
 
-        def zoom_in(self, url = False, ids = None, xpaths = None, zoom_factor = 2):
+        def zoom_in(self, url=False, ids=None, xpaths=None, zoom_factor=2):
             '''
             Zoomed in specified webelements
 
@@ -332,7 +336,43 @@ def create(driver = None):
         def close(self):
             self.driver.close()
 
-    def get_screen(driver, ids = None, xpaths = None, path = None, filename = None):
+    class ImageContainer(object): # this name can be changed
+
+        def get_element(id=None, xpath=None):
+
+            """
+            Crop one element by id or xpath
+            return ImageContainer
+            """
+
+        def crop(x=0, y=0, height=None, width=None):
+            """
+            Crop page vertically from a given point to a given size (in px)
+            return ImageContainer
+            """
+
+        def draw_dot(id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
+            """
+            Draw a red dot on the left of a given element (resize image to add space on left if required)
+            coordinates = (x, y) - center of a dot
+            Use PIL to draw elements, no JavaScript allowed.
+            return ImageContainer
+            """
+
+        def draw_frame(id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
+            """
+            Draw a frame around a given element (resize image to add space on left if required)
+            coordinates = (x, y, width, height) - middle of a dot
+            Use PIL to draw elements, no JavaScript allowed.
+            return ImageContainer
+            """
+
+        def save(filename):
+            """
+            Save to a filename
+            """
+
+    def get_screen(driver, ids=None, xpaths=None, path=None, filename=None):
         # print "WebDriver"
 
         ids = check_ids(ids)
@@ -340,7 +380,7 @@ def create(driver = None):
         path = check_path(path)
         url = driver.current_url
         basename = get_basename(path, url, filename)
-        tempfd = tempfile.NamedTemporaryFile()
+        tempfd = tempfile.NamedTemporaryFile(mode='w+t', delete=False)
 
         driver.save_screenshot(tempfd.name)
 
@@ -358,10 +398,10 @@ def create(driver = None):
                 retval += get_xpaths(driver, tempfd, basename, xpaths)
 
         tempfd.close()
-
+        #TODO it should return the ImageContainer object.
         return retval
 
-    def get_data(driver, conf = None, filename = None):
+    def get_data(driver, conf=None, filename=None):
         root_list = driver.find_elements_by_xpath("*")
         all_elements = []
         get_elements_recursive(root_list[0], all_elements, conf)
@@ -375,37 +415,44 @@ def create(driver = None):
 
         return all_elements
 
-    def get_elements_recursive(webelement, all_elements, conf, current_xpath = "/html"):
+
+    def get_elements_recursive(webelement, all_elements, conf, current_xpath="/html"):
         return_elements = []
         children_list = webelement.find_elements_by_xpath("*")
         element_numbers = {child.tag_name: 0 for child in children_list}
 
-        if(children_list == []):
+        if (children_list == []):
             return webelement
         else:
             for child in children_list:
                 element_numbers[child.tag_name] += 1
-                xpath = str(current_xpath) + "/" + str(child.tag_name) + "[" + str(element_numbers[child.tag_name]) + "]"
+                xpath = str(current_xpath) + "/" + str(child.tag_name) + "[" + str(
+                    element_numbers[child.tag_name]) + "]"
                 create_new_tuple(child, xpath, all_elements, conf)
                 return_elements.append(get_elements_recursive(child, all_elements, conf, xpath))
             return return_elements
 
     def create_new_tuple(webelement, xpath, all_elements, conf):
         if webelement.get_attribute("id") and (conf in ["ID", None]):
-            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], webelement.size["height"], str(webelement.get_attribute("id"))
+            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], \
+                       webelement.size["height"], str(webelement.get_attribute("id"))
             all_elements.append(newTuple)
         elif webelement.get_attribute("id") and webelement.get_attribute("class") and (conf in ["ALL"]):
-            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], webelement.size["height"], str(webelement.get_attribute("class")), str(
+            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], \
+                       webelement.size["height"], str(webelement.get_attribute("class")), str(
                 webelement.get_attribute("id"))
             all_elements.append(newTuple)
         elif webelement.get_attribute("id") and (conf in ["ALL"]):
-            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], webelement.size["height"], str(webelement.get_attribute("id"))
+            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], \
+                       webelement.size["height"], str(webelement.get_attribute("id"))
             all_elements.append(newTuple)
         elif webelement.get_attribute("class") and (conf in ["ALL"]):
-            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], webelement.size["height"], str(webelement.get_attribute("class"))
+            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], \
+                       webelement.size["height"], str(webelement.get_attribute("class"))
             all_elements.append(newTuple)
         elif conf in ["ALL"]:
-            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], webelement.size["height"]
+            newTuple = xpath, webelement.location["x"], webelement.location["y"], webelement.size["width"], \
+                       webelement.size["height"]
             all_elements.append(newTuple)
 
     def save_webelements_to_file(webelements, fd):
@@ -415,6 +462,7 @@ def create(driver = None):
             fd.write("\t" + str(webelements[i]) + ",\n")
 
         fd.write("]\n")
+
 
     #########################
     #          body         #
@@ -453,13 +501,16 @@ def create(driver = None):
     else:
         raise Exception("There is something strange with the driver, will you check it?")
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Takes a screen shot of a web page.')
-    parser.add_argument('-u', '--url', dest = "url", help = "url to web page (including http protocol)", required = True)
-    parser.add_argument('-i', '--ids', dest = "ids", help = "list of ids on the web page separated by a space character", nargs = '+')
-    parser.add_argument('-x', '--xpath', dest = "xpath", help = "list of xpath on the web page separated by a space character", nargs = '+')
-    parser.add_argument('-d', '--path', dest = "path", help = "path to save directory; default as run script", default = ".")
-    parser.add_argument('-r', '--remoteUrl', dest = "remoteUrl", help = "url of selenium-server-standalone")
+    parser = argparse.ArgumentParser(description='Takes a screen shot of a web page.')
+    parser.add_argument('-u', '--url', dest="url", help="url to web page (including http protocol)", required=True)
+    parser.add_argument('-i', '--ids', dest="ids", help="list of ids on the web page separated by a space character",
+                        nargs='+')
+    parser.add_argument('-x', '--xpath', dest="xpath",
+                        help="list of xpath on the web page separated by a space character", nargs='+')
+    parser.add_argument('-d', '--path', dest="path", help="path to save directory; default as run script", default=".")
+    parser.add_argument('-r', '--remoteUrl', dest="remoteUrl", help="url of selenium-server-standalone")
     # parser.add_argument('-f', '--format', dest="format", help="choose a code's output [opt: xml, json]", default=None)
 
     args = parser.parse_args()
@@ -469,10 +520,10 @@ if __name__ == '__main__':
         sys.exit(2)
 
     if args.remoteUrl:
-        s = create(webdriver.Remote(command_executor = args.remoteUrl, desired_capabilities = {
+        s = create(webdriver.Remote(command_executor=args.remoteUrl, desired_capabilities={
             "browserName": "firefox",
             "platform": "ANY",
-            }))
+        }))
         s.get(args.url)
         s.get_screen(args.ids, args.xpath, args.path)
     else:
