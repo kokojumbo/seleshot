@@ -1,0 +1,99 @@
+Usage
+=====
+
+Below a number of usage examples are presented.
+
+Please note that SeleShot always takes screen of a whole website,
+even if *id* or *xpath* is specified.
+
+Command line
+------------
+
+* Screen of searchbox (element with attribute id = *searchbox*)
+
+    .. code-block:: bash
+
+        python seleshot.py -u http://www.python.org/ -i searchbox
+
+* Screens of two elements (*content-panel* and *left-panel*), ids is separated by space
+
+    .. code-block:: bash
+
+        python seleshot.py -u http://www.kinyen.pl/ -i content-panel left-panel
+
+* Screen of menu elements by using *xpath*
+
+    .. code-block:: bash
+
+        python seleshot.py -u http://www.python.org/ -x ".//*[@id='menu']/ul/li"
+
+* Multiple screens of menu elements using *xpath* (elements are separated by a space)
+
+    .. code-block:: bash
+
+        python seleshot.py -u http://www.python.org/ -x ".//*[@id='menu']/ul/li[1]" ".//*[@id='menu']/ul/li[2]"
+
+Standalone application
+----------------------
+
+The code below shows how to create a simple application which takes a screen shot of a webpage.
+
+.. code-block:: python
+
+    from seleshot import create
+
+    s = create()
+    s.get_screen(url="http://www.python.org", ids = ["searchbox"])
+    s.close()
+
+This code shows how to use highlight and zoom_in functions. In zoom_in function you do not have to specity url parameter, then
+the driver does not refresh the page and you can zoom in highlighted elements.
+
+.. code-block:: python
+
+    from seleshot import create
+
+    xpaths =  [".//*[@id='content']/h1", ".//*[@id='menu']/ul/li[3]/a"]
+    ids = ["submit"]
+    url = 'http://www.python.org'
+
+    s.highlight(url = url, xpaths = xpaths, frame = True, color = 'yellow')
+    s.zoom_in(ids = ids, xpaths = xpaths, zoom_factor = 5)
+    s.close()
+
+Selenium tests
+--------------
+
+The code below shows how to create a test which takes a screen shot of a webpage.
+
+.. code-block:: python
+
+    from seleshot import create
+
+    class Test(unittest.TestCase):
+        def setUp(self):
+            self.s = seleshot.create()
+
+        def tearDown(self):
+            self.s.close()
+
+        def test_get_data(self):
+            self.s.get_data('http://www.kinyen.pl/', 'ALL', 'dump.txt')
+            self.s.get_screen('http://www.kinyen.pl/', xpaths = l)
+
+Webdriver Remote
+----------------
+
+To use selenium-server-standalone you have to provide url where the server is located
+
+* Screen of searchbox (element with attribute id = *searchbox*) but webdriver is located on *selenium-server-standalone*
+
+    .. code-block:: bash
+
+        python seleshot.py -u http://www.python.org/ -i searchbox -r http://127.0.0.1:4444/wd/hub
+
+* Screen of menu elements with specified *xpath* and url to *selenium-server-standalone*
+
+    .. code-block:: bash
+
+        python seleshot.py -u http://www.python.org/ -x ".//*[@id='menu']/ul/li" -r http://127.0.0.1:4444/wd/hub
