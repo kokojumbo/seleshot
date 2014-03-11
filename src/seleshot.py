@@ -379,6 +379,7 @@ def create(driver=None):
             Save to a filename
             """
             self.image.save(filename, "PNG")
+            return self
 
     def get_screen(driver, ids=None, xpaths=None, path=None, filename=None):
         # print "WebDriver"
@@ -542,6 +543,6 @@ if __name__ == '__main__':
         s.get_screen(args.ids, args.xpath, args.path)
     else:
         s = create()
-        s.get_screen(args.url, args.ids, args.xpath, args.path).save("c:/shot_example.png")
-    
+        s.get_screen(args.url, args.ids, args.xpath, args.path).save("c:/shot_example.png").save("c:/shot_examplxe.png")
+
     s.close()
