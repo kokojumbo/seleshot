@@ -100,7 +100,7 @@ def create(driver=None):
         #             filename.append("]")
         elif xpath[-1] == ']':
             pass
-        #         else:
+            #         else:
         #             filename.append("[")
         #             filename.append(str(index + 1))
         #             filename.append("]")
@@ -338,20 +338,23 @@ def create(driver=None):
 
     class ImageContainer(object): # this name can be changed
 
-        def get_element(id=None, xpath=None):
+        def __init__(self, tempfd):
+            self.tempfd = tempfd;
+            self.image = Image.open(tempfd)
 
+        def get_element(self, id=None, xpath=None):
             """
             Crop one element by id or xpath
             return ImageContainer
             """
 
-        def crop(x=0, y=0, height=None, width=None):
+        def crop(self, x=0, y=0, height=None, width=None):
             """
             Crop page vertically from a given point to a given size (in px)
             return ImageContainer
             """
 
-        def draw_dot(id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
+        def draw_dot(self, id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
             """
             Draw a red dot on the left of a given element (resize image to add space on left if required)
             coordinates = (x, y) - center of a dot
@@ -359,30 +362,41 @@ def create(driver=None):
             return ImageContainer
             """
 
-        def draw_frame(id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
+        def draw_frame(self, id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
             """
             Draw a frame around a given element (resize image to add space on left if required)
             coordinates = (x, y, width, height) - middle of a dot
             Use PIL to draw elements, no JavaScript allowed.
             return ImageContainer
             """
+            # draw = ImageDraw.Draw(im)
+            # draw.line((0, 0) + im.size, fill=128)
+            # draw.line((0, im.size[1], im.size[0], 0), fill=128)
+            # del draw
 
-        def save(filename):
+        def save(self, filename):
             """
             Save to a filename
             """
+            self.image.save(filename, "PNG")
 
     def get_screen(driver, ids=None, xpaths=None, path=None, filename=None):
         # print "WebDriver"
 
         ids = check_ids(ids)
+        print ids
         xpaths = check_xpaths(xpaths)
+        print xpaths
         path = check_path(path)
+        print path
         url = driver.current_url
+        print url
         basename = get_basename(path, url, filename)
+        print basename
         tempfd = tempfile.NamedTemporaryFile(mode='w+t', delete=False)
-
+        print tempfd.name
         driver.save_screenshot(tempfd.name)
+        filename = tempfd.name
 
         retval = []
 
@@ -396,10 +410,10 @@ def create(driver=None):
 
             if xpaths:
                 retval += get_xpaths(driver, tempfd, basename, xpaths)
-
+        print retval
         tempfd.close()
-        #TODO it should return the ImageContainer object.
-        return retval
+        #TODO it should return the ImageContainer object + information about DOM; x,y postions and heights, widths.
+        return ImageContainer(filename)
 
     def get_data(driver, conf=None, filename=None):
         root_list = driver.find_elements_by_xpath("*")
@@ -528,6 +542,6 @@ if __name__ == '__main__':
         s.get_screen(args.ids, args.xpath, args.path)
     else:
         s = create()
-        s.get_screen(args.url, args.ids, args.xpath, args.path)
-
+        s.get_screen(args.url, args.ids, args.xpath, args.path).save("c:/shot_example.png")
+    
     s.close()
