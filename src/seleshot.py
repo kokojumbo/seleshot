@@ -22,7 +22,7 @@ from selenium.common.exceptions import NoSuchElementException
 from types import MethodType
 
 
-def create(driver=None):
+def create(driver = None):
     # hiding everything from the world, buahaha ^_^
     def check_url(url):
         if not isinstance(url, basestring):
@@ -56,7 +56,7 @@ def create(driver=None):
     def translate(txt):
         return txt.translate(string.maketrans(':/', '--'))
 
-    def get_basename(path, url, filename=None):
+    def get_basename(path, url, filename = None):
         if filename:
             if filename[-4:] == ".png":
                 filename = filename[:-4].rpartition(os.sep)[-1]
@@ -88,7 +88,7 @@ def create(driver=None):
             filename += "-" + prefix + "[1].png";
         return filename
 
-    def get_filename(xpath, basename, web_element, index=None):
+    def get_filename(xpath, basename, web_element, index = None):
         xpath = re.sub(r'[/]+', "_", xpath)
         xpath2 = re.sub(r'[\\/:"*?<>|]+', "", xpath)
         filename = [basename, "-", xpath2]
@@ -190,7 +190,7 @@ def create(driver=None):
 
         return retval
 
-    def highlight(driver, url, ids=None, xpaths=None, color='', frame=False, text='', arrow=False):
+    def highlight(driver, url, ids = None, xpaths = None, color = '', frame = False, text = '', arrow = False):
         ids = check_ids(ids)
         xpaths = check_xpaths(xpaths)
         path = os.getcwd()
@@ -217,7 +217,7 @@ def create(driver=None):
 
         driver.save_screenshot(filename)
 
-    def zoom_in(driver, ids=None, xpaths=None, zoom_factor=2):
+    def zoom_in(driver, ids = None, xpaths = None, zoom_factor = 2):
         ids = check_ids(ids)
         xpaths = check_xpaths(xpaths)
         path = os.getcwd()
@@ -262,7 +262,7 @@ def create(driver=None):
         def __init__(self, driver):
             self.driver = driver
 
-        def get_screen(self, url=None, ids=None, xpaths=None, path=None, filename=None):
+        def get_screen(self, url = None, ids = None, xpaths = None, path = None, filename = None):
             '''
             Get specified screen(s)
 
@@ -281,7 +281,7 @@ def create(driver=None):
 
             return get_screen(self.driver, ids, xpaths, path, filename)
 
-        def get_data(self, url, conf=None, filename=None):
+        def get_data(self, url, conf = None, filename = None):
             '''
             Get information about elements on a web page.
 
@@ -296,7 +296,7 @@ def create(driver=None):
 
             return get_data(self.driver, conf, filename)
 
-        def highlight(self, url, ids=None, xpaths=None, color='', frame=False, text='', arrow=False):
+        def highlight(self, url, ids = None, xpaths = None, color = '', frame = False, text = '', arrow = False):
             '''
             Highlight specified elements on a page
 
@@ -315,7 +315,7 @@ def create(driver=None):
 
             return "TODO"
 
-        def zoom_in(self, url=False, ids=None, xpaths=None, zoom_factor=2):
+        def zoom_in(self, url = False, ids = None, xpaths = None, zoom_factor = 2):
             '''
             Zoomed in specified webelements
 
@@ -338,41 +338,61 @@ def create(driver=None):
 
     class ImageContainer(object): # this name can be changed
 
-        def __init__(self, tempfd):
-            self.tempfd = tempfd;
-            self.image = Image.open(tempfd)
+        def __init__(self, image):
+            if isinstance(image, Image.Image):
+                self.image = image
+                print self.image.size
+            else:
+                self.tempfd = image
+                self.image = Image.open(self.tempfd)
 
-        def get_element(self, id=None, xpath=None):
+
+        def cut_element(self, id = None, xpath = None):
             """
             Crop one element by id or xpath
             return ImageContainer
             """
+            # TODO
 
-        def crop(self, x=0, y=0, height=None, width=None):
+        def cut_area(self, x = 0, y = 0, height = None, width = None):
             """
             Crop page vertically from a given point to a given size (in px)
             return ImageContainer
             """
+            if height is None:
+                height = self.image.size[0] - y
+            if width is None:
+                width = self.image.size[1] - x
 
-        def draw_dot(self, id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
+            box = (x, y, width + x, height + y)
+            print box
+            new_image = self.image.crop(box)
+
+            return ImageContainer(new_image)
+
+        def draw_dot(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
             """
             Draw a red dot on the left of a given element (resize image to add space on left if required)
             coordinates = (x, y) - center of a dot
             Use PIL to draw elements, no JavaScript allowed.
             return ImageContainer
             """
+            # TODO
 
-        def draw_frame(self, id=None, xpath=None, coordinates=None, padding=None, color=None, size=None):
+        def draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
             """
             Draw a frame around a given element (resize image to add space on left if required)
             coordinates = (x, y, width, height) - middle of a dot
             Use PIL to draw elements, no JavaScript allowed.
             return ImageContainer
             """
-            # draw = ImageDraw.Draw(im)
-            # draw.line((0, 0) + im.size, fill=128)
-            # draw.line((0, im.size[1], im.size[0], 0), fill=128)
-            # del draw
+            draw = ImageDraw.Draw(self.image)
+            # TODO
+            # example of usage
+            # draw.line((10, 10, 10 + 10, 10 + 10), fill=128)
+
+            del draw
+
 
         def save(self, filename):
             """
@@ -381,7 +401,7 @@ def create(driver=None):
             self.image.save(filename, "PNG")
             return self
 
-    def get_screen(driver, ids=None, xpaths=None, path=None, filename=None):
+    def get_screen(driver, ids = None, xpaths = None, path = None, filename = None):
         # print "WebDriver"
 
         ids = check_ids(ids)
@@ -416,7 +436,7 @@ def create(driver=None):
         #TODO it should return the ImageContainer object + information about DOM; x,y postions and heights, widths.
         return ImageContainer(filename)
 
-    def get_data(driver, conf=None, filename=None):
+    def get_data(driver, conf = None, filename = None):
         root_list = driver.find_elements_by_xpath("*")
         all_elements = []
         get_elements_recursive(root_list[0], all_elements, conf)
@@ -427,11 +447,12 @@ def create(driver=None):
         fd = open(os.path.join(os.getcwd(), filename), "w")
         save_webelements_to_file(all_elements, fd)
         fd.close()
-
+        print os.path.join(os.getcwd())
+        print all_elements
         return all_elements
 
 
-    def get_elements_recursive(webelement, all_elements, conf, current_xpath="/html"):
+    def get_elements_recursive(webelement, all_elements, conf, current_xpath = "/html"):
         return_elements = []
         children_list = webelement.find_elements_by_xpath("*")
         element_numbers = {child.tag_name: 0 for child in children_list}
@@ -543,6 +564,5 @@ if __name__ == '__main__':
         s.get_screen(args.ids, args.xpath, args.path)
     else:
         s = create()
-        s.get_screen(args.url, args.ids, args.xpath, args.path).save("c:/shot_example.png").save("c:/shot_examplxe.png")
-
+        s.get_screen(args.url, args.ids, args.xpath, args.path)
     s.close()
