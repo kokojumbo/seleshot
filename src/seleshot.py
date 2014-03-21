@@ -80,7 +80,7 @@ def create(driver = None):
         for f in files:
             if f.find(prefix) != -1:
                 highlighted_files.append(f)
-        highlighted_files.sort(key=lambda s: len(s))
+        highlighted_files.sort(key = lambda s: len(s))
         if highlighted_files:
             indexOfNumber = highlighted_files[-1].find('[') + 1
             filename += "-" + prefix + "[" + str(int(highlighted_files[-1][indexOfNumber:-5]) + 1) + "].png"
@@ -135,7 +135,7 @@ def create(driver = None):
         location = web_element.location
         size = web_element.size
         left = location['x']
-        right = location['x'] + size['width']
+        right = location['x'] + size['wid th']
         top = location['y']
         down = location['y'] + size['height']
         box = (left, top, right, down) # box of region to crop
@@ -152,8 +152,8 @@ def create(driver = None):
 
     def draw_lines_between_elements(image, element1_box, element2_box):
         draw = ImageDraw.Draw(image)
-        draw.line((element1_box[2], element1_box[1], element2_box[0], element2_box[1]), fill=(0, 100, 0))
-        draw.line((element1_box[2], element1_box[3], element2_box[0], element2_box[3]), fill=(0, 100, 0))
+        draw.line((element1_box[2], element1_box[1], element2_box[0], element2_box[1]), fill = (0, 100, 0))
+        draw.line((element1_box[2], element1_box[3], element2_box[0], element2_box[3]), fill = (0, 100, 0))
 
     def get_ids(driver, tempfd, basename, ids):
         retval = []
@@ -414,7 +414,7 @@ def create(driver = None):
         print url
         basename = get_basename(path, url, filename)
         print basename
-        tempfd = tempfile.NamedTemporaryFile(mode='w+t', delete=False)
+        tempfd = tempfile.NamedTemporaryFile(mode = 'w+t', delete = False)
         print tempfd.name
         driver.save_screenshot(tempfd.name)
         filename = tempfd.name
