@@ -153,7 +153,36 @@ def create(driver = None):
             :param color:
             :param size:
             """
-            # TODO
+            if color is None:
+                color = 'red'
+            if size is None:
+                size = 0
+            new_image = self.image.copy()
+            draw = ImageDraw.Draw(new_image)
+            if (id is None) and (xpath is None) and (coordinates is None):
+                raise Exception("Please provide id or xpath.")
+            elif id is not None and self.cut is False:
+                my_element = get_web_element_by_id(self.driver, id)
+                # box = get_web_element_box_size(my_element)
+                # box = [box[0], box[1], box[2], box[3]]
+
+                # TODO It's difficult to add an empty space for a dot
+            elif xpath is not None and self.cut is False:
+                my_element = get_web_element_by_xpath(self.driver, xpath)
+                # box = get_web_element_box_size(my_element)
+                # box = [box[0], box[1], box[2], box[3]]
+
+                # TODO It's difficult to add an empty space for a dot
+            elif coordinates is not None:
+                box = (coordinates[0] - size - padding,
+                       coordinates[1] - size,
+                       coordinates[0] + size - padding,
+                       coordinates[1] + size)
+
+                draw.ellipse(box, fill = color, outline = color)
+
+                return ImageContainer(new_image, self.driver)
+            del draw
 
         def draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
             """
@@ -168,7 +197,55 @@ def create(driver = None):
             :param color:
             :param size:
             """
-            # TODO
+            if color is None:
+                color = 'red'
+            if size is None:
+                size = 0
+            new_image = self.image.copy()
+            draw = ImageDraw.Draw(new_image)
+            if (id is None) and (xpath is None) and (coordinates is None):
+                raise Exception("Please provide id or xpath.")
+            elif id is not None and self.cut is False:
+                my_element = get_web_element_by_id(self.driver, id)
+                box = get_web_element_box_size(my_element)
+                box = [box[0], box[1], box[2], box[3]]
+                if padding is not None:
+                    box[0] = box[0] - padding
+                    box[1] = box[1] - padding
+                    box[2] = box[2] + padding
+                    box[3] = box[3] + padding
+                frame = ((box[0], box[1]), (box[2], box[1]), (box[2], box[3]), (box[0], box[3]), (box[0], box[1]))
+                draw.line(frame, fill = color, width = size)
+                return ImageContainer(new_image, self.driver)
+            elif xpath is not None and self.cut is False:
+                my_element = get_web_element_by_xpath(self.driver, xpath)
+                box = get_web_element_box_size(my_element)
+                box = [box[0], box[1], box[2], box[3]]
+                if padding is not None:
+                    box[0] = box[0] - padding
+                    box[1] = box[1] - padding
+                    box[2] = box[2] + padding
+                    box[3] = box[3] + padding
+                frame = ((box[0], box[1]), (box[2], box[1]), (box[2], box[3]), (box[0], box[3]), (box[0], box[1]))
+                draw.line(frame, fill = color, width = size)
+
+                return ImageContainer(new_image, self.driver)
+            elif coordinates is not None:
+                box = list()
+                box.append(coordinates[0] - (int(coordinates[2] / 2)))
+                box.append(coordinates[1] - (int(coordinates[3] / 2)))
+                box.append(coordinates[0] + (int(coordinates[2] / 2)))
+                box.append(coordinates[1] + (int(coordinates[3] / 2)))
+
+                if padding is not None:
+                    box[0] = box[0] - padding
+                    box[1] = box[1] - padding
+                    box[2] = box[2] + padding
+                    box[3] = box[3] + padding
+                frame = ((box[0], box[1]), (box[2], box[1]), (box[2], box[3]), (box[0], box[3]), (box[0], box[1]))
+                draw.line(frame, fill = color, width = size)
+                return ImageContainer(new_image, self.driver)
+            del draw
 
         def save(self, filename):
             """
