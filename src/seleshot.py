@@ -159,7 +159,7 @@ def create(driver = None):
                 size = 0
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
-            if (id is None) and (xpath is None) and (coordinates is None):
+            if id is None and xpath is None and coordinates is None:
                 raise Exception("Please provide id or xpath.")
             elif id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
@@ -197,10 +197,8 @@ def create(driver = None):
             :param color:
             :param size:
             """
-            if color is None:
-                color = 'red'
-            if size is None:
-                size = 0
+            color = color if color is not None else "red"
+            size = size if size is not None else 0
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
             if (id is None) and (xpath is None) and (coordinates is None):
@@ -219,8 +217,7 @@ def create(driver = None):
                 return ImageContainer(new_image, self.driver)
             elif xpath is not None and self.cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
-                box = get_web_element_box_size(my_element)
-                box = [box[0], box[1], box[2], box[3]]
+                box = [i for i in get_web_element_box_size(my_element)]
                 if padding is not None:
                     box[0] = box[0] - padding
                     box[1] = box[1] - padding
