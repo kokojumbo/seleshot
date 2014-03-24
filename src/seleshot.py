@@ -205,8 +205,7 @@ def create(driver = None):
                 raise Exception("Please provide id or xpath.")
             elif id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
-                box = get_web_element_box_size(my_element)
-                box = [box[0], box[1], box[2], box[3]]
+                box = [i for i in get_web_element_box_size(my_element)]
                 if padding is not None:
                     box[0] = box[0] - padding
                     box[1] = box[1] - padding
@@ -228,11 +227,12 @@ def create(driver = None):
 
                 return ImageContainer(new_image, self.driver)
             elif coordinates is not None:
-                box = list()
-                box.append(coordinates[0] - (int(coordinates[2] / 2)))
-                box.append(coordinates[1] - (int(coordinates[3] / 2)))
-                box.append(coordinates[0] + (int(coordinates[2] / 2)))
-                box.append(coordinates[1] + (int(coordinates[3] / 2)))
+                box = [
+                    coordinates[0] - int(coordinates[2] / 2),
+                    coordinates[1] - int(coordinates[3] / 2),
+                    coordinates[0] + int(coordinates[2] / 2),
+                    coordinates[1] + int(coordinates[3] / 2)
+                ]
 
                 if padding is not None:
                     box[0] = box[0] - padding
