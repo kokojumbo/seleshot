@@ -21,7 +21,19 @@ from types import MethodType
 def create(driver = None):
     # hiding everything from the world, buahaha ^_^
 
+    """
+
+    :param driver:
+    :return: :raise:
+    """
+
     def check_url(url):
+        """
+        Check provided url is valid.
+        :rtype : string
+        :param url: URL - string
+        :return: Valid URL  :raise: ValueError
+        """
         if not isinstance(url, basestring):
             raise ValueError("i don't understand your url :(")
 
@@ -31,6 +43,13 @@ def create(driver = None):
         return url
 
     def get_web_element_by_id(driver, id):
+        """
+        Get web element by id.
+        :rtype : WebElement
+        :param driver: WebDriver
+        :param id: id to find WebElement
+        :return: WebElement from WebDriver
+        """
         element = None
         try:
             element = driver.find_element_by_id(id)
@@ -43,6 +62,13 @@ def create(driver = None):
         return element
 
     def get_web_element_by_xpath(driver, xpath):
+        """
+        Get web element by xpath.
+        :rtype : WebElement
+        :param driver: WebDriver
+        :param xpath: xpath to find WebElement
+        :return: WebElement from WebDriver
+        """
         element = None
         try:
             element = driver.find_element_by_xpath(xpath)
@@ -55,6 +81,12 @@ def create(driver = None):
         return element
 
     def get_web_element_box_size(web_element):
+        """
+        Get coordinates of the WebElement.
+        :rtype :  tuple
+        :param web_element: WebElement
+        :return: coordinates of WebElement in box
+        """
         location = web_element.location
         size = web_element.size
         left = location['x']
@@ -65,6 +97,19 @@ def create(driver = None):
         box = (left, top, right, down)
         return box
 
+    def get_screen(driver):
+        """
+        Get screen shoot and save it in a temporary file
+        :rtype : ImageContainer
+        :param driver:
+        :return: Screen shot
+        """
+        tempfd = tempfile.NamedTemporaryFile(mode = 'w+t', delete = False)
+        driver.save_screenshot(tempfd.name)
+        temp_filename = tempfd.name
+        tempfd.close()
+        return ImageContainer(temp_filename, driver)
+
     class ScreenShot(object):
         def __init__(self, driver):
             self.driver = driver
@@ -73,7 +118,7 @@ def create(driver = None):
             """
             Get specified screen(s)
 
-            @param url: web page to capture (including http protocol, None to reuse loaded webpage)
+            :param url: web page to capture (including http protocol, None to reuse loaded webpage)
             """
 
             if url is not None:
@@ -90,6 +135,13 @@ def create(driver = None):
     class ImageContainer(object):
 
         def __init__(self, image, driver, cut = False):
+            """
+            Constructor for ImageContainer.
+            :param image: In this parameter you can provide Image object or a path to Image
+            :param driver: WebDriver object
+            :param cut: True - image was cut one or more times, False - there were not any cut operation
+            :rtype : ImageContainer
+            """
             self.cut = cut
             self.driver = driver
             if image is None:
@@ -102,10 +154,10 @@ def create(driver = None):
 
         def cut_element(self, id = None, xpath = None):
             """
-            Crop one element by id or xpath
+            Cut one element by id or xpath. After this operation you cannot cut more elements.
             return ImageContainer
-            :param id:
-            :param xpath:
+            :param id: id of a given element
+            :param xpath: xpath of a given element
             """
             if self.cut is True:
                 raise Exception('You cannot cut more elements')
@@ -125,12 +177,12 @@ def create(driver = None):
 
         def cut_area(self, x = 0, y = 0, height = None, width = None):
             """
-            Crop page vertically from a given point to a given size (in px)
+            Cut area from a given point to a given size (in px)
             return ImageContainer
-            :param x:
-            :param y:
-            :param height:
-            :param width:
+            :param x: x coordinate for a point
+            :param y: y coordinate for a point
+            :param height: height of an area
+            :param width: width of an area
             """
             height = height if height is not None else self.image.size[1] - y
             width = width if width is not None else self.image.size[0] - x
@@ -140,16 +192,17 @@ def create(driver = None):
 
         def draw_dot(self, id = None, xpath = None, coordinates = None, padding = 0, color = None, size = None):
             """
-            Draw a red dot on the left of a given element (resize image to add space on left if required)
-            coordinates = (x, y) - center of a dot
-            Use PIL to draw elements, no JavaScript allowed.
+            For id and xpath:
+                Draw a red dot on the left of a given element. (resize image to add space on left if it is required)
+            For coordinates:
+                Draw a red dot in a given point (x,y)
             return ImageContainer
-            :param id:
-            :param xpath:
-            :param coordinates:
-            :param padding:
-            :param color:
-            :param size:
+            :param id: id of a given element
+            :param xpath: xpath of a given element
+            :param coordinates: coordinates = (x, y) - center of a dot
+            :param padding: padding between dot and element
+            :param color: color of dot
+            :param size: size of dot
             """
             color = color if color is not None else "red"
             size = size if size is not None else 1
@@ -201,16 +254,18 @@ def create(driver = None):
 
         def draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
             """
-            Draw a frame around a given element
-            coordinates = (x, y, width, height) - middle of a dot
-            Use PIL to draw elements, no JavaScript allowed.
+            For id and xpath:
+                Draw a frame around a given element
+            For coordinates:
+                Draw a frame for a given coordinates
             return ImageContainer
-            :param id:
-            :param xpath:
-            :param coordinates:
-            :param padding:
-            :param color:
-            :param size:
+            :rtype : ImageContainer
+            :param id: id of a given element
+            :param xpath: xpath of a given element
+            :param coordinates: coordinates for a frame - coordinates = (x, y, width, height) - middle of a dot
+            :param padding: padding between frame and element
+            :param color: color of frame
+            :param size: size of frame (thickness)
             """
             color = color if color is not None else "red"
             size = size if size is not None else 0
@@ -244,7 +299,7 @@ def create(driver = None):
         def save(self, filename):
             """
             Save to a filename
-            :param filename:
+            :param filename: name of a file
             """
             self.image.save(filename, "PNG")
             return self
@@ -252,16 +307,6 @@ def create(driver = None):
         def close(self):
             self.driver.close()
 
-    def get_screen(driver):
-        """
-        :param driver:
-        :return:
-        """
-        tempfd = tempfile.NamedTemporaryFile(mode = 'w+t', delete = False)
-        driver.save_screenshot(tempfd.name)
-        temp_filename = tempfd.name
-        tempfd.close()
-        return ImageContainer(temp_filename, driver)
 
     #########################
     #          body         #

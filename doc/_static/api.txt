@@ -1,48 +1,153 @@
 API
 ===
 
-ScreenShot class contains the following functions:
+ScreenShot.create() function contains the following functions and classes:
 
-.. function:: get_screen(url, ids = None, xpaths = None, path = None, df = None)
+ 
+.. function:: check_url(url):
+	
+	Check provided url is valid.
+	
+	:rtype : string
+	
+	:param url: URL - string
+	:return: Valid URL  :raise: ValueError
+	
 
-    Get specified screen(s)
+.. function:: get_web_element_by_id(driver, id):
+	
+	Get web element by id.
+	
+	:rtype : WebElement
+	
+	:param driver: WebDriver
+	:param id: id to find WebElement
+	
+	:return: WebElement from WebDriver
+	
 
-    :param url: url to the webpage (including http protocol)
-    :param ids: list of ids on the web page
-    :param xpaths: list of xpath on the web page
-    :param path: path to save directory
-    :param df: not supported
+.. function:: get_web_element_by_xpath(driver, xpath):
+	
+	Get web element by xpath.
+	
+	:rtype : WebElement
+	
+	:param driver: WebDriver
+	:param xpath: xpath to find WebElement
+	
+	:return: WebElement from WebDriver
+	
 
-.. function:: get_data(url, conf = None, filename = None)
+.. function:: get_web_element_box_size(web_element):
+	
+	Get coordinates of the WebElement.
+	
+	:rtype :  tuple
+	
+	:param web_element: WebElement
+	
+	:return: coordinates of WebElement in box
+	
 
-    Get information about elements on a web page.
+.. function:: get_screen(driver):
+	
+	Get screen shoot and save it in a temporary file
+	
+	:rtype : ImageContainer
+	
+	:param driver:
+	
+	:return: Screen shot
+	
 
-    :param url: url to the webpage (including http protocol)
-    :param conf: configuration of storing elements, store only elements with ids if conf is in [None, "ID"]; store everything (ids and classes) if conf is in ["ALL"]
-    :param filename: a location of a file where to store collected data
+.. class:: ScreenShot(object):
 
-.. function:: highlight(self, url, ids = None, xpaths = None, color = '', frame = False, text = '', arrow = False)
+	.. function:: get_screen(self, url = None):
+		
+		Get specified screen(s)
 
-    Highlight specified webelements.
+		:param url: web page to capture (including http protocol, None to reuse loaded webpage)
+		
 
-    :param url: url to the webpage (including http protocol)
-    :param ids: list of ids on the web page
-    :param xpaths: list of xpath on the web pag
-    :param color: specified webelement color
-    :param frame: boolean value indicating if to draw a frame around the webelement
-    :param text: optional text which would be draw next to the highlighted webelement
-    :param arrow: boolean value indicating if to draw an arrow next to the webelement
+.. class:: ImageContainer(object):
 
-.. function:: zoom_in(self, url = False, ids = None, xpaths = None, zoom_factor = 2)
+	.. function:: __init__(self, image, driver, cut = False):
+		
+		Constructor for ImageContainer.
+		
+		:param image: In this parameter you can provide Image object or a path to Image
+		:param driver: WebDriver object
+		:param cut: True - image was cut one or more times, False - there were not any cut operation
+		
+		:rtype : ImageContainer
+		
 
-    Zoomed in specified webelements.
+	.. function:: cut_element(self, id = None, xpath = None):
+		
+		Cut one element by id or xpath. After this operation you cannot cut more elements.
+		
+		:return: ImageContainer
+		
+		:param id: id of a given element
+		:param xpath: xpath of a given element
+		
 
-    :param url: url to the webpage (including http protocol), if url is false there is no page refresh
-    :param ids: list of ids on the web page
-    :param xpaths: list of xpath on the web pag
-    :param zoom_factor: factor of zooming
+	.. function:: cut_area(self, x = 0, y = 0, height = None, width = None):
+		
+		Cut area from a given point to a given size (in px).
+		
+		:return: ImageContainer
+		
+		:param x: x coordinate for a point
+		:param y: y coordinate for a point
+		:param height: height of an area
+		:param width: width of an area
+		
+
+	.. function:: draw_dot(self, id = None, xpath = None, coordinates = None, padding = 0, color = None, size = None):
+		
+		For id and xpath:
+			Draw a red dot on the left of a given element. (resize image to add space on left if it is required).
+		For coordinates:
+			Draw a red dot in a given point (x,y).
+			
+		:return: ImageContainer
+		
+		:param id: id of a given element
+		:param xpath: xpath of a given element
+		:param coordinates: coordinates = (x, y) - center of a dot
+		:param padding: padding between dot and element
+		:param color: color of dot
+		:param size: size of dot
+		
+
+	.. function:: draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
+		
+		For id and xpath:
+			Draw a frame around a given element.
+		For coordinates:
+			Draw a frame for a given coordinates.
+			
+		:return: ImageContainer
+		
+		:rtype: ImageContainer
+		
+		:param id: id of a given element
+		:param xpath: xpath of a given element
+		:param coordinates: coordinates for a frame - coordinates = (x, y, width, height) - middle of a dot
+		:param padding: padding between frame and element
+		:param color: color of frame
+		:param size: size of frame (thickness)
+		
 
 
-.. function:: close()
+	.. function:: save(self, filename):
+		
+		Save to a filename.
+		
+		:param filename: name of a file
+		
 
-    Close webdriver.
+
+ 
+
