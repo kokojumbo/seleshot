@@ -164,11 +164,15 @@ def create(driver = None):
 
             elif id is not None:
                 my_element = get_web_element_by_id(self.driver, id)
+                if my_element is None:
+                    raise Exception("There is no such element")
                 box = get_web_element_box_size(my_element)
                 new_image = self.image.crop(box)
                 return ImageContainer(new_image, self.driver, True)
             elif xpath is not None:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
+                if my_element is None:
+                    raise Exception("There is no such element")
                 box = get_web_element_box_size(my_element)
                 new_image = self.image.crop(box)
                 return ImageContainer(new_image, self.driver, True)
@@ -211,9 +215,13 @@ def create(driver = None):
 
             if id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
+                if my_element is None:
+                    raise Exception("There is no such element")
                 box = get_web_element_box_size(my_element)
             elif xpath is not None and self.cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
+                if my_element is None:
+                    raise Exception("There is no such element")
                 box = get_web_element_box_size(my_element)
             elif coordinates is not None:
                 box = (coordinates[0] - size - padding,
@@ -273,9 +281,13 @@ def create(driver = None):
             draw = ImageDraw.Draw(new_image)
             if id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
+                if my_element is None:
+                    raise Exception("There is no such element")
                 box = [i for i in get_web_element_box_size(my_element)]
             elif xpath is not None and self.cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
+                if my_element is None:
+                    raise Exception("There is no such element")
                 box = [i for i in get_web_element_box_size(my_element)]
             elif coordinates is not None:
                 box = [
@@ -332,37 +344,5 @@ def create(driver = None):
     else:
         raise Exception("There is something strange with the driver, will you check it?")
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Takes a screen shot of a web page.')
-    parser.add_argument('-u', '--url', dest = "url", help = "url to web page (including http protocol)",
-                        required = True)
-    parser.add_argument('-i', '--ids', dest = "ids",
-                        help = "list of ids on the web page separated by a space character",
-                        nargs = '+')
-    parser.add_argument('-x', '--xpath', dest = "xpath",
-                        help = "list of xpath on the web page separated by a space character", nargs = '+')
-    parser.add_argument('-d', '--path', dest = "path", help = "path to save directory; default as run script",
-                        default = ".")
-    parser.add_argument('-r', '--remoteUrl', dest = "remoteUrl", help = "url of selenium-server-standalone")
-    # parser.add_argument('-f', '--format', dest="format", help="choose a code's output [opt: xml, json]", default=None)
-
-    args = parser.parse_args()
-
-    if args.url[:7] != "http://":
-        print sys.argv[0] + ": error: argument -u/--url requires http protocol"
-        sys.exit(2)
-
-    if args.remoteUrl:
-        s = create(webdriver.Remote(command_executor = args.remoteUrl, desired_capabilities = {
-            "browserName": "firefox",
-            "platform": "ANY",
-        }))
-        s.get(args.url)
-        s.get_screen(args.ids, args.xpath, args.path)
-    else:
-        s = create()
-        s.get_screen(args.url, args.ids, args.xpath, args.path)
-    s.close()
 
 
