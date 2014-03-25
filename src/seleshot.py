@@ -156,23 +156,67 @@ def create(driver = None):
             if color is None:
                 color = 'red'
             if size is None:
-                size = 0
+                size = 1
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
             if id is None and xpath is None and coordinates is None:
                 raise Exception("Please provide id or xpath.")
             elif id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
-                # box = get_web_element_box_size(my_element)
-                # box = [box[0], box[1], box[2], box[3]]
+                box = get_web_element_box_size(my_element)
+                x = box[0] - 1
+                y = box[1] + int((box[3] - box[1]) / 2)
+                dot_box = (x - size - size - padding,
+                           y - size,
+                           x - padding,
+                           y + size)
+                if dot_box[0] < 0:
+                    additional_space = 2
+                    difference = -dot_box[0]
+                    bigger_image = Image.new('RGB',
+                                             (new_image.size[0] + difference + additional_space, new_image.size[1]),
+                                             "white")
+                    bigger_image.paste(new_image, (difference + additional_space, 0))
 
-                # TODO It's difficult to add an empty space for a dot
+                    dot_box = (dot_box[0] + difference + additional_space,
+                               dot_box[1],
+                               dot_box[2] + difference + additional_space,
+                               dot_box[3])
+                    draw = ImageDraw.Draw(bigger_image)
+                    draw.ellipse(dot_box, fill = color, outline = color)
+                    return ImageContainer(bigger_image, self.driver)
+                else:
+                    draw.ellipse(dot_box, fill = color, outline = color)
+                    return ImageContainer(new_image, self.driver)
+
             elif xpath is not None and self.cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
-                # box = get_web_element_box_size(my_element)
-                # box = [box[0], box[1], box[2], box[3]]
+                box = get_web_element_box_size(my_element)
+                x = box[0] - 1
+                y = box[1] + int((box[3] - box[1]) / 2)
+                dot_box = (x - size - size - padding,
+                           y - size,
+                           x - padding,
+                           y + size)
+                if dot_box[0] < 0:
+                    additional_space = 2
+                    difference = -dot_box[0]
+                    bigger_image = Image.new('RGB',
+                                             (new_image.size[0] + difference + additional_space, new_image.size[1]),
+                                             "white")
+                    bigger_image.paste(new_image, (difference + additional_space, 0))
 
-                # TODO It's difficult to add an empty space for a dot
+                    dot_box = (dot_box[0] + difference + additional_space,
+                               dot_box[1],
+                               dot_box[2] + difference + additional_space,
+                               dot_box[3])
+                    draw = ImageDraw.Draw(bigger_image)
+                    draw.ellipse(dot_box, fill = color, outline = color)
+                    return ImageContainer(bigger_image, self.driver)
+                else:
+                    draw.ellipse(dot_box, fill = color, outline = color)
+                    return ImageContainer(new_image, self.driver)
+
             elif coordinates is not None:
                 box = (coordinates[0] - size - padding,
                        coordinates[1] - size,
@@ -201,7 +245,7 @@ def create(driver = None):
             size = size if size is not None else 0
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
-            if (id is None) and (xpath is None) and (coordinates is None):
+            if id is None and xpath is None and coordinates is None:
                 raise Exception("Please provide id or xpath.")
             elif id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)

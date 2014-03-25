@@ -24,6 +24,7 @@ if __name__ == '__main__':
     i.draw_frame(coordinates=(500,500,40,50), color='green').save('frame2.png')
     i.cut_area(200, 300, 250, 350).draw_dot(coordinates = (50, 50), padding = 3, color = 'yellow', size = 5).draw_dot(
         coordinates = (60, 20), padding = 4, color = 'red', size = 10).save('dot1.png')
-
+    i.draw_dot(id='touchnav-wrapper',padding= 10, size=100).save("dot2.png")
+    i.draw_dot(id='submit',padding= 1, size=3).save("dot3.png")
     s.close()
 
