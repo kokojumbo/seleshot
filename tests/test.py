@@ -1,7 +1,7 @@
 '''
 Created on Oct 31, 2012
 
-@author: perf
+@author: Marcin Gumkowski, Wojciech Zamozniewicz
 '''
 import os
 import unittest

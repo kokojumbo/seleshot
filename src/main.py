@@ -3,7 +3,7 @@
 '''
 Created on Apr 13, 2012
 
-@author: Bartosz Alchimowicz
+@author: Marcin Gumkowski, Wojciech Zamozniewicz
 '''
 
 import seleshot
