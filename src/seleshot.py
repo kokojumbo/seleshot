@@ -199,7 +199,7 @@ def create(driver = None):
             For id and xpath:
                 Draw a red dot on the left of a given element. (resize image to add space on left if it is required)
             For coordinates:
-                Draw a red dot in a given point (x,y)
+                Draw a red dot in a given point (x, y)
             return ImageContainer
             :param id: id of a given element
             :param xpath: xpath of a given element
