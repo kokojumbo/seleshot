@@ -145,7 +145,7 @@ def create(driver = None):
             self.cut = cut
             self.driver = driver
             if image is None:
-                raise Exception("Please provide an image.")
+                raise ValueError("Image required")
             elif isinstance(image, Image.Image):
                 self.image = image
             else:
@@ -160,19 +160,19 @@ def create(driver = None):
             :param xpath: xpath of a given element
             """
             if self.cut is True:
-                raise Exception('You cannot cut more elements')
+                raise RuntimeError('Element can be cut only once')
 
             elif id is not None:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
-                    raise Exception("There is no such element")
+                    raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
                 new_image = self.image.crop(box)
                 return ImageContainer(new_image, self.driver, True)
             elif xpath is not None:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
                 if my_element is None:
-                    raise Exception("There is no such element")
+                    raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
                 new_image = self.image.crop(box)
                 return ImageContainer(new_image, self.driver, True)
