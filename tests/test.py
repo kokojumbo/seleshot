@@ -122,12 +122,12 @@ class Test(unittest.TestCase):
         url = 'http://www.python.org'
         self.i = self.s.get_screen(url)
 
-        self.i.save('C:\\test.png')
-        img = Image.open('C:\\test.png', 'r')
+        self.i.save('test.png')
+        img = Image.open('test.png', 'r')
         self.assertNotEqual(img, None)
         self.assertEqual(isinstance(img, Image.Image), True)
         del img
-        os.remove('C:\\test.png')
+        os.remove('test.png')
 
         self.i.cut_element("submit").save('test.png')
         img = Image.open('test.png', 'r')
