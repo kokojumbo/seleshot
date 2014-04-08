@@ -30,14 +30,14 @@ def create(driver = None):
     def check_url(url):
         """
         Check provided url is valid.
-        :rtype : string
         :param url: URL - string
         :return: Valid URL  :raise: ValueError
+        :rtype : string
         """
         if not isinstance(url, basestring):
             raise ValueError("i don't understand your url :(")
 
-        if url[:7] != "http://":
+        if not url.startswith("http://"):
             raise ValueError("http protocol is required")
 
         return url
@@ -45,10 +45,10 @@ def create(driver = None):
     def get_web_element_by_id(driver, id):
         """
         Get web element by id.
-        :rtype : WebElement
         :param driver: WebDriver
         :param id: id to find WebElement
         :return: WebElement from WebDriver
+        :rtype : WebElement
         """
         element = None
         try:
@@ -64,10 +64,10 @@ def create(driver = None):
     def get_web_element_by_xpath(driver, xpath):
         """
         Get web element by xpath.
-        :rtype : WebElement
         :param driver: WebDriver
         :param xpath: xpath to find WebElement
         :return: WebElement from WebDriver
+        :rtype : WebElement
         """
         element = None
         try:
@@ -83,9 +83,9 @@ def create(driver = None):
     def get_web_element_box_size(web_element):
         """
         Get coordinates of the WebElement.
-        :rtype :  tuple
         :param web_element: WebElement
         :return: coordinates of WebElement in box
+        :rtype :  tuple
         """
         location = web_element.location
         size = web_element.size
@@ -100,9 +100,9 @@ def create(driver = None):
     def get_screen(driver):
         """
         Get screen shoot and save it in a temporary file
-        :rtype : ImageContainer
         :param driver:
         :return: Screen shot
+        :rtype : ImageContainer
         """
         tempfd = tempfile.NamedTemporaryFile(mode = 'w+t', delete = False)
         driver.save_screenshot(tempfd.name)
@@ -161,23 +161,18 @@ def create(driver = None):
             """
             if self.cut is True:
                 raise RuntimeError('Element can be cut only once')
-
-            elif id is not None:
-                my_element = get_web_element_by_id(self.driver, id)
-                if my_element is None:
-                    raise ValueError("There is no such element")
-                box = get_web_element_box_size(my_element)
-                new_image = self.image.crop(box)
-                return ImageContainer(new_image, self.driver, True)
+            if id is not None:
+                element = get_web_element_by_id(self.driver, id)
             elif xpath is not None:
-                my_element = get_web_element_by_xpath(self.driver, xpath)
-                if my_element is None:
-                    raise ValueError("There is no such element")
-                box = get_web_element_box_size(my_element)
-                new_image = self.image.crop(box)
-                return ImageContainer(new_image, self.driver, True)
+                element = get_web_element_by_xpath(self.driver, xpath)
             else:
                 raise ValueError("Please provide id or xpath.")
+            if element is None:
+                raise ValueError("There is no such element")
+            box = get_web_element_box_size(element)
+            new_image = self.image.crop(box)
+            return ImageContainer(new_image, self.driver, True)
+
 
         def cut_area(self, x = 0, y = 0, height = None, width = None):
             """
@@ -216,12 +211,12 @@ def create(driver = None):
             if id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
-                    raise Exception("There is no such element")
+                    raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
             elif xpath is not None and self.cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
                 if my_element is None:
-                    raise Exception("There is no such element")
+                    raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
             elif coordinates is not None:
                 box = (coordinates[0] - size - padding,
@@ -267,13 +262,13 @@ def create(driver = None):
             For coordinates:
                 Draw a frame for a given coordinates
             return ImageContainer
-            :rtype : ImageContainer
             :param id: id of a given element
             :param xpath: xpath of a given element
             :param coordinates: coordinates for a frame - coordinates = (x, y, width, height) - middle of a dot
             :param padding: padding between frame and element
             :param color: color of frame
             :param size: size of frame (thickness)
+            :rtype : ImageContainer
             """
             color = color if color is not None else "red"
             size = size if size is not None else 0
@@ -282,12 +277,12 @@ def create(driver = None):
             if id is not None and self.cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
-                    raise Exception("There is no such element")
+                    raise ValueError("There is no such element")
                 box = [i for i in get_web_element_box_size(my_element)]
             elif xpath is not None and self.cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
                 if my_element is None:
-                    raise Exception("There is no such element")
+                    raise ValueError("There is no such element")
                 box = [i for i in get_web_element_box_size(my_element)]
             elif coordinates is not None:
                 box = [
