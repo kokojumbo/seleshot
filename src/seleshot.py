@@ -18,6 +18,22 @@ from selenium.common.exceptions import NoSuchElementException
 from types import MethodType
 
 
+class Position():
+    MIDDLE = 1
+    INSIDE_LEFT = 2
+    INSIDE_RIGHT = 3
+    INSIDE_TOP = 4
+    INSIDE_BOTTOM = 5
+    OUTSIDE_LEFT = 6
+    OUTSIDE_RIGHT = 7
+    OUTSIDE_TOP = 8
+    OUTSIDE_BOTTOM = 9
+    BORDER_LEFT = 10
+    BORDER_RIGHT = 11
+    BORDER_TOP = 12
+    BORDER_BOTTOM = 13
+
+
 def create(driver = None):
     # hiding everything from the world, buahaha ^_^
 
@@ -26,6 +42,7 @@ def create(driver = None):
     :param driver:
     :return: :raise:
     """
+
 
     def check_url(url):
         # Check provided url is valid.
@@ -130,6 +147,7 @@ def create(driver = None):
 
     class ImageContainer(object):
 
+
         def __init__(self, image, driver, cut = False):
             """
             Constructor for ImageContainer.
@@ -185,7 +203,8 @@ def create(driver = None):
             new_image = self.image.crop(box)
             return ImageContainer(new_image, self.driver, True)
 
-        def draw_dot(self, id = None, xpath = None, coordinates = None, padding = 0, color = None, size = None):
+        def draw_dot(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0),
+                     color = None, size = None):
             """
             For id and xpath:
                 Draw a red dot on the left of a given element. (resize image to add space on left if it is required)
@@ -215,41 +234,96 @@ def create(driver = None):
                     raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
             elif coordinates is not None:
-                box = (coordinates[0] - size - padding,
-                       coordinates[1] - size,
-                       coordinates[0] + size - padding,
-                       coordinates[1] + size)
+                box = (coordinates[0] - size + padding[0],
+                       coordinates[1] - size + padding[1],
+                       coordinates[0] + size + padding[0],
+                       coordinates[1] + size + padding[1])
 
                 draw.ellipse(box, fill = color, outline = color)
 
                 return ImageContainer(new_image, self.driver)
+
             else:
                 del draw
                 raise ValueError("Please provide id or xpath or coordinates")
-            x = box[0] - 1
-            y = box[1] + int((box[3] - box[1]) / 2)
-            dot_box = (x - size - size - padding,
-                       y - size,
-                       x - padding,
-                       y + size)
-            if dot_box[0] < 0:
-                additional_space = 2
-                difference = -dot_box[0]
-                bigger_image = Image.new('RGB',
-                                         (new_image.size[0] + difference + additional_space, new_image.size[1]),
-                                         "white")
-                bigger_image.paste(new_image, (difference + additional_space, 0))
 
-                dot_box = (dot_box[0] + difference + additional_space,
-                           dot_box[1],
-                           dot_box[2] + difference + additional_space,
-                           dot_box[3])
+            # distances from borders
+            border_x = int((box[2] - box[0]) / 2)
+            border_y = int((box[3] - box[1]) / 2)
+            # central point of element
+            x = box[0] + border_x
+            y = box[1] + border_y
+
+            inside_left = 0
+            inside_right = 0
+            inside_top = 0
+            inside_bottom = 0
+            outside_left = 0
+            outside_right = 0
+            outside_top = 0
+            outside_bottom = 0
+            border_left = 0
+            border_right = 0
+            border_top = 0
+            border_bottom = 0
+
+            if position == Position.INSIDE_LEFT:
+                inside_left = -border_x + size
+            elif position == Position.INSIDE_RIGHT:
+                inside_right = border_x - size
+            elif position == Position.INSIDE_TOP:
+                inside_top = -border_y + size
+            elif position == Position.INSIDE_BOTTOM:
+                inside_bottom = border_y - size
+            elif position == Position.OUTSIDE_LEFT:
+                outside_left = -border_x - size
+            elif position == Position.OUTSIDE_RIGHT:
+                outside_right = border_x + size
+            elif position == Position.OUTSIDE_TOP:
+                outside_top = -border_y - size
+            elif position == Position.OUTSIDE_BOTTOM:
+                outside_bottom = border_y + size
+            elif position == Position.BORDER_LEFT:
+                border_left = -border_x
+            elif position == Position.BORDER_RIGHT:
+                border_right = border_x
+            elif position == Position.BORDER_TOP:
+                border_top = -border_y
+            elif position == Position.BORDER_BOTTOM:
+                border_bottom = border_y
+
+            dot_box = (
+                x - size + inside_left + inside_right + outside_left + outside_right + border_left + border_right +
+                padding[0],
+                y - size + inside_top + inside_bottom + outside_top + outside_bottom + border_top + border_bottom +
+                padding[1],
+                x + size + inside_left + inside_right + outside_left + outside_right + border_left + border_right +
+                padding[0],
+                y + size + inside_top + inside_bottom + outside_top + outside_bottom + border_top + border_bottom +
+                padding[1],)
+
+            # add additional space for a dot
+            if dot_box[0] < 0 or dot_box[1] < 0 or dot_box[2] > new_image.size[0] or dot_box[3] > new_image.size[1]:
+                difference_left = -dot_box[0] if dot_box[0] < 0 else 0
+                difference_top = -dot_box[1] if dot_box[1] < 0 else 0
+                difference_right = dot_box[2] - new_image.size[0] if dot_box[2] > new_image.size[0] else 0
+                difference_bottom = dot_box[3] - new_image.size[1] if dot_box[3] > new_image.size[1] else 0
+                bigger_image = Image.new('RGB',
+                                         (new_image.size[0] + difference_left + difference_right,
+                                          new_image.size[1] + difference_top + difference_bottom),
+                                         "white")
+                bigger_image.paste(new_image, (difference_left, difference_top))
+                dot_box = (dot_box[0] + difference_left,
+                           dot_box[1] + difference_top,
+                           dot_box[2] + difference_left,
+                           dot_box[3] + difference_top)
                 draw = ImageDraw.Draw(bigger_image)
                 draw.ellipse(dot_box, fill = color, outline = color)
                 return ImageContainer(bigger_image, self.driver)
             else:
                 draw.ellipse(dot_box, fill = color, outline = color)
                 return ImageContainer(new_image, self.driver)
+
 
         def draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
             """
@@ -299,6 +373,7 @@ def create(driver = None):
             draw.line(frame, fill = color, width = size)
             return ImageContainer(new_image, self.driver)
 
+
         def save(self, filename):
             """
             Save to a filename
@@ -306,6 +381,7 @@ def create(driver = None):
             """
             self.image.save(filename, "PNG")
             return self
+
 
         def close(self):
             self.driver.close()
