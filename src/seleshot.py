@@ -28,12 +28,11 @@ def create(driver = None):
     """
 
     def check_url(url):
-        """
-        Check provided url is valid.
-        :param url: URL - string
-        :return: Valid URL  :raise: ValueError
-        :rtype : string
-        """
+        # Check provided url is valid.
+        # :param url: URL - string
+        # :return: Valid URL  :raise: ValueError
+        # :rtype : string
+        
         if not isinstance(url, basestring):
             raise ValueError("i don't understand your url :(")
 
@@ -43,13 +42,12 @@ def create(driver = None):
         return url
 
     def get_web_element_by_id(driver, id):
-        """
-        Get web element by id.
-        :param driver: WebDriver
-        :param id: id to find WebElement
-        :return: WebElement from WebDriver
-        :rtype : WebElement
-        """
+        # Get web element by id.
+        # :param driver: WebDriver
+        # :param id: id to find WebElement
+        # :return: WebElement from WebDriver
+        # :rtype : WebElement
+        
         element = None
         try:
             element = driver.find_element_by_id(id)
@@ -62,13 +60,12 @@ def create(driver = None):
         return element
 
     def get_web_element_by_xpath(driver, xpath):
-        """
-        Get web element by xpath.
-        :param driver: WebDriver
-        :param xpath: xpath to find WebElement
-        :return: WebElement from WebDriver
-        :rtype : WebElement
-        """
+        # Get web element by xpath.
+        # :param driver: WebDriver
+        # :param xpath: xpath to find WebElement
+        # :return: WebElement from WebDriver
+        # :rtype : WebElement
+
         element = None
         try:
             element = driver.find_element_by_xpath(xpath)
@@ -81,12 +78,11 @@ def create(driver = None):
         return element
 
     def get_web_element_box_size(web_element):
-        """
-        Get coordinates of the WebElement.
-        :param web_element: WebElement
-        :return: coordinates of WebElement in box
-        :rtype :  tuple
-        """
+        # Get coordinates of the WebElement.
+        # :param web_element: WebElement
+        # :return: coordinates of WebElement in box
+        # :rtype :  tuple
+
         location = web_element.location
         size = web_element.size
         left = location['x']
