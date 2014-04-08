@@ -13,7 +13,7 @@ if __name__ == '__main__':
     url = 'http://www.python.org'
 
     i = s.get_screen(url)
-    i.cut_element(id = 'krowa').save('cut1')
+    i.cut_element(id = 'submit').save('cut1')
     i.cut_element(xpath = ".//*[@id='mainnav']/ul/li").save('cut2.png')
     i.cut_area(height = 100).save('area1.png')
     i.cut_area(200, 300, 250, 350).save('area2.png')
