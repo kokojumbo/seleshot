@@ -12,6 +12,7 @@ import argparse
 import tempfile
 import Image
 import ImageDraw
+import ImageFilter
 from selenium import webdriver
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import NoSuchElementException
@@ -373,6 +374,26 @@ def create(driver = None):
             draw.line(frame, fill = color, width = size)
             return ImageContainer(new_image, self.driver)
 
+        def draw_blur(self, id = None, xpath = None):
+            """
+            TODO
+            """
+
+            if self.cut is True:
+                raise RuntimeError('Element can be selected only once')
+            if id is not None:
+                element = get_web_element_by_id(self.driver, id)
+            elif xpath is not None:
+                element = get_web_element_by_xpath(self.driver, xpath)
+            else:
+                raise ValueError("Please provide id or xpath.")
+            if element is None:
+                raise ValueError("There is no such element")
+            box = get_web_element_box_size(element)
+            new_image = self.image.crop(box)
+            blurred_image = self.image.filter(ImageFilter.BLUR)
+            blurred_image.paste(new_image, box)
+            return ImageContainer(blurred_image, self.driver)
 
         def save(self, filename):
             """

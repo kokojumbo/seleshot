@@ -13,7 +13,7 @@ if __name__ == '__main__':
     url = 'http://www.python.org'
 
     i = s.get_screen(url)
-    i.cut_element(id = 'submit').save('cut1')
+    i.cut_element(id = 'submit').save('cut1.png')
     i.cut_element(xpath = ".//*[@id='mainnav']/ul/li").save('cut2.png')
     i.cut_area(height = 100).save('area1.png')
     i.cut_area(200, 300, 250, 350).save('area2.png')
@@ -23,6 +23,10 @@ if __name__ == '__main__':
     i.cut_area(200, 300, 250, 350).draw_dot(coordinates = (50, 50), padding = (10, 4), color = 'yellow',
                                             size = 5).draw_dot(
         coordinates = (60, 20), padding = (10, 4), color = 'red', size = 10).save('dot1.png')
+
+    i.draw_blur(id = 'submit').save('blur1.png')
+    i.draw_blur(xpath = ".//*[@id='mainnav']/ul/li").save('blur2.png')
+
     i.draw_dot(id = 'touchnav-wrapper', padding = (100, 200), size = 100, position = seleshot.Position.MIDDLE).save(
         "dot2M.png")
     i.draw_dot(id = 'submit', padding = (10, -10), size = 3, position = seleshot.Position.MIDDLE).save("dot3M.png")
