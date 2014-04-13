@@ -19,22 +19,6 @@ from selenium.common.exceptions import NoSuchElementException
 from types import MethodType
 
 
-class Position():
-    MIDDLE = 1
-    INSIDE_LEFT = 2
-    INSIDE_RIGHT = 3
-    INSIDE_TOP = 4
-    INSIDE_BOTTOM = 5
-    OUTSIDE_LEFT = 6
-    OUTSIDE_RIGHT = 7
-    OUTSIDE_TOP = 8
-    OUTSIDE_BOTTOM = 9
-    BORDER_LEFT = 10
-    BORDER_RIGHT = 11
-    BORDER_TOP = 12
-    BORDER_BOTTOM = 13
-
-
 def create(driver = None):
     # hiding everything from the world, buahaha ^_^
 
@@ -148,6 +132,15 @@ def create(driver = None):
 
     class ImageContainer(object):
 
+        class Position():
+            MIDDLE = 1
+            INSIDE = 2
+            OUTSIDE = 4
+            BORDER = 8
+            LEFT = 16
+            RIGHT = 32
+            TOP = 64
+            BOTTOM = 128
 
         def __init__(self, image, driver, cut = False):
             """
@@ -157,6 +150,7 @@ def create(driver = None):
             :param cut: True - image was cut one or more times, False - there were not any cut operation
             :rtype : ImageContainer
             """
+
             self.cut = cut
             self.driver = driver
             if image is None:
@@ -187,7 +181,6 @@ def create(driver = None):
             box = get_web_element_box_size(element)
             new_image = self.image.crop(box)
             return ImageContainer(new_image, self.driver, True)
-
 
         def cut_area(self, x = 0, y = 0, height = None, width = None):
             """
@@ -268,29 +261,29 @@ def create(driver = None):
             border_top = 0
             border_bottom = 0
 
-            if position == Position.INSIDE_LEFT:
+            if position == ImageContainer.Position.INSIDE | ImageContainer.Position.LEFT:
                 inside_left = -border_x + size
-            elif position == Position.INSIDE_RIGHT:
+            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.RIGHT:
                 inside_right = border_x - size
-            elif position == Position.INSIDE_TOP:
+            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.TOP:
                 inside_top = -border_y + size
-            elif position == Position.INSIDE_BOTTOM:
+            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.BOTTOM:
                 inside_bottom = border_y - size
-            elif position == Position.OUTSIDE_LEFT:
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.LEFT:
                 outside_left = -border_x - size
-            elif position == Position.OUTSIDE_RIGHT:
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.RIGHT:
                 outside_right = border_x + size
-            elif position == Position.OUTSIDE_TOP:
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.TOP:
                 outside_top = -border_y - size
-            elif position == Position.OUTSIDE_BOTTOM:
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.BOTTOM:
                 outside_bottom = border_y + size
-            elif position == Position.BORDER_LEFT:
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.LEFT:
                 border_left = -border_x
-            elif position == Position.BORDER_RIGHT:
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.RIGHT:
                 border_right = border_x
-            elif position == Position.BORDER_TOP:
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.TOP:
                 border_top = -border_y
-            elif position == Position.BORDER_BOTTOM:
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.BOTTOM:
                 border_bottom = border_y
 
             dot_box = (
@@ -324,7 +317,6 @@ def create(driver = None):
             else:
                 draw.ellipse(dot_box, fill = color, outline = color)
                 return ImageContainer(new_image, self.driver)
-
 
         def draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
             """
@@ -374,6 +366,141 @@ def create(driver = None):
             draw.line(frame, fill = color, width = size)
             return ImageContainer(new_image, self.driver)
 
+        def draw_image(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), filename = None, image = None):
+            """
+            TODO
+            """
+
+            new_image = self.image.copy()
+            draw = ImageDraw.Draw(new_image)
+            if filename is not None:
+                image = Image.open(filename)
+            else:
+                if image is None:
+                    raise ValueError("Please provide filename of an image.")
+            if id is not None and self.cut is False:
+                my_element = get_web_element_by_id(self.driver, id)
+                if my_element is None:
+                    raise ValueError("There is no such element")
+                box = get_web_element_box_size(my_element)
+            elif xpath is not None and self.cut is False:
+                my_element = get_web_element_by_xpath(self.driver, xpath)
+                if my_element is None:
+                    raise ValueError("There is no such element")
+                box = get_web_element_box_size(my_element)
+            elif coordinates is not None:
+                box = (coordinates[0] + padding[0],
+                       coordinates[1] + padding[1],
+                       coordinates[0] + padding[0] + image.size[0],
+                       coordinates[1] + padding[1] + image.size[1])
+
+                # draw.ellipse(box, fill = color, outline = color)
+                new_image.paste(image, box)
+                return ImageContainer(new_image, self.driver)
+
+            else:
+                del draw
+                raise ValueError("Please provide id or xpath or coordinates")
+
+            size_x = image.size[0] / 2
+            size_y = image.size[1] / 2
+            remainder_x = 0
+            remainder_y = 0
+            if image.size[0] % 2 is not 0:
+                remainder_x = 1
+            if image.size[1] % 2 is not 0:
+                remainder_y = 1
+
+            # distances from borders
+            border_x = int((box[2] - box[0]) / 2)
+            border_y = int((box[3] - box[1]) / 2)
+            # central point of element
+            x = box[0] + border_x
+            y = box[1] + border_y
+
+            inside_left = 0
+            inside_right = 0
+            inside_top = 0
+            inside_bottom = 0
+            outside_left = 0
+            outside_right = 0
+            outside_top = 0
+            outside_bottom = 0
+            border_left = 0
+            border_right = 0
+            border_top = 0
+            border_bottom = 0
+
+            if position == ImageContainer.Position.INSIDE | ImageContainer.Position.LEFT:
+                inside_left = -border_x + size_x
+            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.RIGHT:
+                inside_right = border_x - size_x
+            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.TOP:
+                inside_top = -border_y + size_y
+            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.BOTTOM:
+                inside_bottom = border_y - size_y
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.LEFT:
+                outside_left = -border_x - size_x
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.RIGHT:
+                outside_right = border_x + size_x
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.TOP:
+                outside_top = -border_y - size_y
+            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.BOTTOM:
+                outside_bottom = border_y + size_y
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.LEFT:
+                border_left = -border_x
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.RIGHT:
+                border_right = border_x
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.TOP:
+                border_top = -border_y
+            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.BOTTOM:
+                border_bottom = border_y
+
+            image_box = (
+                x - size_x + inside_left + inside_right + outside_left + outside_right + border_left + border_right +
+                padding[0] - remainder_x,
+                y - size_y + inside_top + inside_bottom + outside_top + outside_bottom + border_top + border_bottom +
+                padding[1] - remainder_y,
+                x + size_x + inside_left + inside_right + outside_left + outside_right + border_left + border_right +
+                padding[0],
+                y + size_y + inside_top + inside_bottom + outside_top + outside_bottom + border_top + border_bottom +
+                padding[1],)
+
+            # add additional space for an image
+            if image_box[0] < 0 or image_box[1] < 0 or image_box[2] > new_image.size[0] or image_box[3] > new_image.size[1]:
+                difference_left = -image_box[0] if image_box[0] < 0 else 0
+                difference_top = -image_box[1] if image_box[1] < 0 else 0
+                difference_right = image_box[2] - new_image.size[0] if image_box[2] > new_image.size[0] else 0
+                difference_bottom = image_box[3] - new_image.size[1] if image_box[3] > new_image.size[1] else 0
+                bigger_image = Image.new('RGB',
+                                         (new_image.size[0] + difference_left + difference_right,
+                                          new_image.size[1] + difference_top + difference_bottom),
+                                         "white")
+                bigger_image.paste(new_image, (difference_left, difference_top))
+                image_box = (image_box[0] + difference_left,
+                             image_box[1] + difference_top,
+                             image_box[2] + difference_left,
+                             image_box[3] + difference_top)
+                bigger_image.paste(image, image_box)
+                return ImageContainer(bigger_image, self.driver)
+            else:
+
+                new_image.paste(image, image_box)
+                return ImageContainer(new_image, self.driver)
+
+        def draw_zoom(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), zoom = None):
+            """
+            TODO
+            """
+            image = self.cut_element(id = id, xpath = xpath).image
+            if zoom is None or zoom <= 0:
+                zoom = 1
+            width = int(image.size[0] / zoom)
+            height = int(image.size[1] / zoom)
+            image = image.resize((width, height), Image.ANTIALIAS)
+            new_image = self.draw_image(id = id, xpath = xpath, coordinates = coordinates, position = position, padding = padding, image = image).image
+            return ImageContainer(new_image, self.driver)
+
         def draw_blur(self, id = None, xpath = None):
             """
             TODO
@@ -403,10 +530,8 @@ def create(driver = None):
             self.image.save(filename, "PNG")
             return self
 
-
         def close(self):
             self.driver.close()
-
 
     #########################
     #          body         #
