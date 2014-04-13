@@ -656,11 +656,22 @@ def create(driver = None):
             self.image.save(filename, "PNG")
             return self
 
+        def is_cut(self):
+            """
+            If True, then there is possibility to cut an element.
+            If False, then there is not possibility to cut any element.
+
+            :returns: possibility to cut
+            :rtype: boolean
+            """
+            return self.__cut
+
         def close(self):
             """
             Close the ImageContainer object
             """
             self.driver.close()
+
 
     #########################
     #          body         #

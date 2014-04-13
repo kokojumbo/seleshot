@@ -261,10 +261,19 @@ ScreenShot.create() function contains the following functions and classes:
 		:returns: ImageContainer
 		:rtype: ImageContainer
 
+
+	.. function:: is_cut(self):
+
+        If True, then there is possibility to cut an element.
+        If False, then there is not possibility to cut any element.
+
+        :returns: possibility to cut
+        :rtype: boolean
+
+
 	.. function:: close(self):
 		
 		Close the ImageContainer object		
 
 
  
-
