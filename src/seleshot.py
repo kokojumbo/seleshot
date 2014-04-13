@@ -21,19 +21,25 @@ from types import MethodType
 
 def create(driver = None):
     # hiding everything from the world, buahaha ^_^
-
     """
+    Creates an instance of Seleshot object.
 
-    :param driver:
-    :return: :raise:
+    :param driver: Web driver for the site
+    :type driver: WebDriver
+    :returns: Driver of Selenium
+    :rtype: WebDriver
     """
-
 
     def check_url(url):
-        # Check provided url is valid.
-        # :param url: URL - string
-        # :return: Valid URL  :raise: ValueError
-        # :rtype : string
+        """
+        Check provided url is valid.
+
+        :param url: URL - string
+        :type url: string
+        :returns: Valid URL
+        :rtype: string
+        :raises: ValueError
+        """
 
         if not isinstance(url, basestring):
             raise ValueError("i don't understand your url :(")
@@ -44,12 +50,17 @@ def create(driver = None):
         return url
 
     def get_web_element_by_id(driver, id):
-        # Get web element by id.
-        # :param driver: WebDriver
-        # :param id: id to find WebElement
-        # :return: WebElement from WebDriver
-        # :rtype : WebElement
+        """
+        Get web element by id.
 
+        :param driver: Web Driver
+        :type driver: WebDriver
+        :param id: id to find WebElement
+        :type id: string
+        :returns: WebElement from WebDriver
+        :rtype: WebElement
+        :raises: NoSuchElementException
+        """
         element = None
         try:
             element = driver.find_element_by_id(id)
@@ -62,11 +73,17 @@ def create(driver = None):
         return element
 
     def get_web_element_by_xpath(driver, xpath):
-        # Get web element by xpath.
-        # :param driver: WebDriver
-        # :param xpath: xpath to find WebElement
-        # :return: WebElement from WebDriver
-        # :rtype : WebElement
+        """
+        Get web element by xpath.
+
+        :param driver: Web Driver
+        :type driver: WebDriver
+        :param xpath: xpath to find WebElement
+        :type xpath: string
+        :returns: WebElement from WebDriver
+        :rtype: WebElement
+        :raises: NoSuchElementException
+        """
 
         element = None
         try:
@@ -80,11 +97,14 @@ def create(driver = None):
         return element
 
     def get_web_element_box_size(web_element):
-        # Get coordinates of the WebElement.
-        # :param web_element: WebElement
-        # :return: coordinates of WebElement in box
-        # :rtype :  tuple
+        """
+        Get coordinates of the WebElement.
 
+        :param web_element: Element of the web site
+        :type web_element: WebElement
+        :returns: coordinates of WebElement in box
+        :rtype: tuple
+        """
         location = web_element.location
         size = web_element.size
         left = location['x']
@@ -98,9 +118,11 @@ def create(driver = None):
     def get_screen(driver):
         """
         Get screen shoot and save it in a temporary file
-        :param driver:
-        :return: Screen shot
-        :rtype : ImageContainer
+
+        :param driver: Web Driver
+        :type driver: WebDriver
+        :returns: Screen shot
+        :rtype: ImageContainer
         """
         tempfd = tempfile.NamedTemporaryFile(mode = 'w+t', delete = False)
         driver.save_screenshot(tempfd.name)
@@ -117,6 +139,10 @@ def create(driver = None):
             Get specified screen(s)
 
             :param url: web page to capture (including http protocol, None to reuse loaded webpage)
+            :type url: string
+            :returns: Screen shot
+            :rtype: ImageContainer
+            :raises: Exception
             """
 
             if url is not None:
@@ -133,6 +159,22 @@ def create(driver = None):
     class ImageContainer(object):
 
         class Position():
+            """
+            Enumeration of possible positions:
+
+            * MIDDLE
+            * INSIDE
+            * OUTSIDE
+            * BORDER
+            * LEFT
+            * RIGHT
+            * TOP
+            * BOTTOM
+
+            Example of usage::
+
+            position = Position.OUTSIDE | Position.LEFT
+            """
             MIDDLE = 1
             INSIDE = 2
             OUTSIDE = 4
@@ -145,10 +187,14 @@ def create(driver = None):
         def __init__(self, image, driver, cut = False):
             """
             Constructor for ImageContainer.
+
             :param image: In this parameter you can provide Image object or a path to Image
+            :type image: Image or string
             :param driver: WebDriver object
+            :type driver: WebDriver
             :param cut: True - image was cut one or more times, False - there were not any cut operation
-            :rtype : ImageContainer
+            :type cut: boolean
+            :raises: ValueError
             """
 
             self.cut = cut
@@ -164,9 +210,14 @@ def create(driver = None):
         def cut_element(self, id = None, xpath = None):
             """
             Cut one element by id or xpath. After this operation you cannot cut more elements.
-            return ImageContainer
+
             :param id: id of a given element
+            :type id: string
             :param xpath: xpath of a given element
+            :type xpath: string
+            :returns: ImageContainer
+            :rtype: ImageContainer
+            :raises: RuntimeError, ValueError
             """
             if self.cut is True:
                 raise RuntimeError('Element can be cut only once')
@@ -185,11 +236,17 @@ def create(driver = None):
         def cut_area(self, x = 0, y = 0, height = None, width = None):
             """
             Cut area from a given point to a given size (in px)
-            return ImageContainer
+
             :param x: x coordinate for a point
+            :type x: integer
             :param y: y coordinate for a point
+            :type y: integer
             :param height: height of an area
+            :type height: integer or None
             :param width: width of an area
+            :type width: integer or None
+            :returns: ImageContainer
+            :rtype: ImageContainer
             """
             height = height if height is not None else self.image.size[1] - y
             width = width if width is not None else self.image.size[0] - x
@@ -201,16 +258,27 @@ def create(driver = None):
                      color = None, size = None):
             """
             For id and xpath:
-                Draw a red dot on the left of a given element. (resize image to add space on left if it is required)
+                Draw a red dot on a given position of a given element.
             For coordinates:
                 Draw a red dot in a given point (x, y)
-            return ImageContainer
+
             :param id: id of a given element
+            :type id: string
             :param xpath: xpath of a given element
+            :type xpath: string
             :param coordinates: coordinates = (x, y) - center of a dot
+            :type coordinates: tuple of integers (x, y)
+            :param position: position of a dot
+            :type position: Position enum
             :param padding: padding between dot and element
+            :type padding: tuple of integers (x, y)
             :param color: color of dot
+            :type color: color object or string
             :param size: size of dot
+            :type size: integer
+            :returns: ImageContainer
+            :rtype: ImageContainer
+            :raises: ValueError
             """
             color = color if color is not None else "red"
             size = size if size is not None else 1
@@ -324,14 +392,22 @@ def create(driver = None):
                 Draw a frame around a given element
             For coordinates:
                 Draw a frame for a given coordinates
-            return ImageContainer
+
             :param id: id of a given element
+            :type id: string
             :param xpath: xpath of a given element
+            :type xpath: string
             :param coordinates: coordinates for a frame - coordinates = (x, y, width, height) - middle of a dot
+            :type coordinates: tuple of integers - (x, y, width, height)
             :param padding: padding between frame and element
+            :type padding: tuple of integers (x, y)
             :param color: color of frame
+            :type color: color object or string
             :param size: size of frame (thickness)
-            :rtype : ImageContainer
+            :type size: integer
+            :returns: ImageContainer
+            :rtype: ImageContainer
+            :raises: ValueError
             """
             color = color if color is not None else "red"
             size = size if size is not None else 0
@@ -368,9 +444,29 @@ def create(driver = None):
 
         def draw_image(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), filename = None, image = None):
             """
-            TODO
-            """
+            For id and xpath:
+                Draw an image on a given position of a given element.
+            For coordinates:
+                Draw an image in a given point (x, y)
 
+            :param id: id of a given element
+            :type id: string
+            :param xpath: xpath of a given element
+            :type xpath: string
+            :param coordinates: coordinates = (x, y) - center of an image
+            :type coordinates: tuple of integers (x, y)
+            :param position: position of an image
+            :type position: Position enum
+            :param padding: padding between dot and element
+            :type padding: tuple of integers (x, y)
+            :param filename: filename of the image file
+            :type filename: string
+            :param image: reference to Image object
+            :type image: Image object
+            :returns: ImageContainer
+            :rtype: ImageContainer
+            :raises: ValueError
+            """
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
             if filename is not None:
@@ -490,7 +586,25 @@ def create(driver = None):
 
         def draw_zoom(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), zoom = None):
             """
-            TODO
+            For id and xpath:
+                Draw a zoomed image on a given position of a given element.
+            For coordinates:
+                Draw a zoomed element in a given point (x, y).
+
+            :param id: id of a given element
+            :type id: string
+            :param xpath: xpath of a given element
+            :type xpath: string
+            :param coordinates: coordinates = (x, y) - center of a zoomed image
+            :type coordinates: tuple of integers (x, y)
+            :param position: position of a zoomed image
+            :type position: Position enum
+            :param padding: padding between dot and element
+            :type padding: tuple of integers (x, y)
+            :param zoom: zoom size of an element
+            :type zoom: integer
+            :returns: ImageContainer
+            :rtype: ImageContainer
             """
             image = self.cut_element(id = id, xpath = xpath).image
             if zoom is None or zoom <= 0:
@@ -503,7 +617,15 @@ def create(driver = None):
 
         def draw_blur(self, id = None, xpath = None):
             """
-            TODO
+            Blur whole area of the screenshot except a given element.
+
+            :param id: id of a given element
+            :type id: string
+            :param xpath: xpath of a given element
+            :type xpath: string
+            :returns: ImageContainer
+            :rtype: ImageContainer
+            :raises: RuntimeError, ValueError
             """
 
             if self.cut is True:
@@ -525,12 +647,19 @@ def create(driver = None):
         def save(self, filename):
             """
             Save to a filename
+
             :param filename: name of a file
+            :type filename: string
+            :returns: ImageContainer
+            :rtype: ImageContainer
             """
             self.image.save(filename, "PNG")
             return self
 
         def close(self):
+            """
+            Close the ImageContainer object
+            """
             self.driver.close()
 
     #########################

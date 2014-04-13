@@ -1,63 +1,72 @@
 API
 ===
 
+.. function:: create(url):
+
+	Creates an instance of Seleshot object.
+	
+    :param driver: Web driver for the site
+    :type driver: WebDriver
+    :returns: Driver of Selenium
+    :rtype: WebDriver
+	
 ScreenShot.create() function contains the following functions and classes:
 
- 
 .. function:: check_url(url):
 	
 	Check provided url is valid.
 	
-	:rtype : string
-	
 	:param url: URL - string
-	:return: Valid URL  :raise: ValueError
+	:type url: string
+	:returns: Valid URL
+	:rtype: string
+	:raises: ValueError
 	
 
 .. function:: get_web_element_by_id(driver, id):
 	
 	Get web element by id.
-	
-	:rtype : WebElement
-	
-	:param driver: WebDriver
+
+	:param driver: Web Driver
+	:type driver: WebDriver
 	:param id: id to find WebElement
-	
-	:return: WebElement from WebDriver
+	:type id: string
+	:returns: WebElement from WebDriver
+	:rtype: WebElement
+	:raises: NoSuchElementException
 	
 
 .. function:: get_web_element_by_xpath(driver, xpath):
 	
 	Get web element by xpath.
-	
-	:rtype : WebElement
-	
-	:param driver: WebDriver
+
+	:param driver: Web Driver
+	:type driver: WebDriver
 	:param xpath: xpath to find WebElement
-	
-	:return: WebElement from WebDriver
+	:type xpath: string
+	:returns: WebElement from WebDriver
+	:rtype: WebElement
+	:raises: NoSuchElementException
 	
 
 .. function:: get_web_element_box_size(web_element):
 	
 	Get coordinates of the WebElement.
-	
-	:rtype :  tuple
-	
-	:param web_element: WebElement
-	
-	:return: coordinates of WebElement in box
+
+	:param web_element: Element of the web site
+	:type web_element: WebElement
+	:returns: coordinates of WebElement in box
+	:rtype: tuple
 	
 
 .. function:: get_screen(driver):
 	
 	Get screen shoot and save it in a temporary file
-	
-	:rtype : ImageContainer
-	
-	:param driver:
-	
-	:return: Screen shot
+
+	:param driver: Web Driver
+	:type driver: WebDriver
+	:returns: Screen shot
+	:rtype: ImageContainer
 	
 
 .. class:: ScreenShot(object):
@@ -67,86 +76,194 @@ ScreenShot.create() function contains the following functions and classes:
 		Get specified screen(s)
 
 		:param url: web page to capture (including http protocol, None to reuse loaded webpage)
+		:type url: string
+		:returns: Screen shot
+		:rtype: ImageContainer
+		:raises: Exception
 		
 
 .. class:: ImageContainer(object):
 
+	.. class:: Position():
+	
+		Enumeration of possible positions:
+
+		* MIDDLE
+		* INSIDE
+		* OUTSIDE
+		* BORDER
+		* LEFT
+		* RIGHT
+		* TOP
+		* BOTTOM
+		
+		Example of usage::
+		
+		position = Position.OUTSIDE | Position.LEFT
+			
 	.. function:: __init__(self, image, driver, cut = False):
 		
 		Constructor for ImageContainer.
-		
+
 		:param image: In this parameter you can provide Image object or a path to Image
+		:type image: Image or string
 		:param driver: WebDriver object
+		:type driver: WebDriver
 		:param cut: True - image was cut one or more times, False - there were not any cut operation
-		
-		:rtype : ImageContainer
+		:type cut: boolean
+		:raises: ValueError
 		
 
 	.. function:: cut_element(self, id = None, xpath = None):
 		
 		Cut one element by id or xpath. After this operation you cannot cut more elements.
-		
-		:return: ImageContainer
-		
+
 		:param id: id of a given element
+		:type id: string
 		:param xpath: xpath of a given element
+		:type xpath: string
+		:returns: ImageContainer
+		:rtype: ImageContainer
+		:raises: RuntimeError, ValueError
 		
 
 	.. function:: cut_area(self, x = 0, y = 0, height = None, width = None):
 		
-		Cut area from a given point to a given size (in px).
-		
-		:return: ImageContainer
-		
+		Cut area from a given point to a given size (in px)
+
 		:param x: x coordinate for a point
+		:type x: integer
 		:param y: y coordinate for a point
+		:type y: integer
 		:param height: height of an area
+		:type height: integer or None
 		:param width: width of an area
+		:type width: integer or None
+		:returns: ImageContainer
+		:rtype: ImageContainer
 		
 
 	.. function:: draw_dot(self, id = None, xpath = None, coordinates = None, padding = 0, color = None, size = None):
 		
 		For id and xpath:
-			Draw a red dot on the left of a given element. (resize image to add space on left if it is required).
+			Draw a red dot on a given position of a given element.
 		For coordinates:
-			Draw a red dot in a given point (x,y).
-			
-		:return: ImageContainer
-		
+			Draw a red dot in a given point (x, y)
+
 		:param id: id of a given element
+		:type id: string
 		:param xpath: xpath of a given element
+		:type xpath: string
 		:param coordinates: coordinates = (x, y) - center of a dot
+		:type coordinates: tuple of integers (x, y)
+		:param position: position of a dot
+		:type position: Position enum
 		:param padding: padding between dot and element
+		:type padding: tuple of integers (x, y)
 		:param color: color of dot
+		:type color: color object or string
 		:param size: size of dot
+		:type size: integer
+		:returns: ImageContainer
+		:rtype: ImageContainer
+		:raises: ValueError
 		
 
 	.. function:: draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
 		
 		For id and xpath:
-			Draw a frame around a given element.
+			Draw a frame around a given element
 		For coordinates:
-			Draw a frame for a given coordinates.
-			
-		:return: ImageContainer
-		
-		:rtype: ImageContainer
-		
+			Draw a frame for a given coordinates
+
 		:param id: id of a given element
+		:type id: string
 		:param xpath: xpath of a given element
+		:type xpath: string
 		:param coordinates: coordinates for a frame - coordinates = (x, y, width, height) - middle of a dot
+		:type coordinates: tuple of integers - (x, y, width, height)
 		:param padding: padding between frame and element
+		:type padding: tuple of integers (x, y)
 		:param color: color of frame
+		:type color: color object or string
 		:param size: size of frame (thickness)
+		:type size: integer
+		:returns: ImageContainer
+		:rtype: ImageContainer
+		:raises: ValueError
+	
+	.. function:: draw_image(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), filename = None, image = None):	
+
+		For id and xpath:
+			Draw an image on a given position of a given element.
+		For coordinates:
+			Draw an image in a given point (x, y)
+
+		:param id: id of a given element
+		:type id: string
+		:param xpath: xpath of a given element
+		:type xpath: string
+		:param coordinates: coordinates = (x, y) - center of an image
+		:type coordinates: tuple of integers (x, y)
+		:param position: position of an image
+		:type position: Position enum
+		:param padding: padding between dot and element
+		:type padding: tuple of integers (x, y)
+		:param filename: filename of the image file
+		:type filename: string
+		:param image: reference to Image object
+		:type image: Image object
+		:returns: ImageContainer
+		:rtype: ImageContainer
+		:raises: ValueError
 		
+	.. function:: draw_zoom(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), zoom = None):
+	
+		For id and xpath:
+			Draw a zoomed image on a given position of a given element.
+		For coordinates:
+			Draw a zoomed element in a given point (x, y).
+
+		:param id: id of a given element
+		:type id: string
+		:param xpath: xpath of a given element
+		:type xpath: string
+		:param coordinates: coordinates = (x, y) - center of a zoomed image
+		:type coordinates: tuple of integers (x, y)
+		:param position: position of a zoomed image
+		:type position: Position enum
+		:param padding: padding between dot and element
+		:type padding: tuple of integers (x, y)
+		:param zoom: zoom size of an element
+		:type zoom: integer
+		:returns: ImageContainer
+		:rtype: ImageContainer
+	
+	.. function:: draw_blur(self, id = None, xpath = None):
+
+		Blur whole area of the screenshot except a given element.
+
+		:param id: id of a given element
+		:type id: string
+		:param xpath: xpath of a given element
+		:type xpath: string
+		:returns: ImageContainer
+		:rtype: ImageContainer
+		:raises: RuntimeError, ValueError
 
 
 	.. function:: save(self, filename):
 		
-		Save to a filename.
-		
+		Save to a filename
+
 		:param filename: name of a file
+		:type filename: string
+		:returns: ImageContainer
+		:rtype: ImageContainer
+
+	.. function:: close(self):
 		
+		Close the ImageContainer object		
 
 
  
