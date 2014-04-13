@@ -197,7 +197,7 @@ def create(driver = None):
             :raises: ValueError
             """
 
-            self.cut = cut
+            self.__cut = cut
             self.driver = driver
             if image is None:
                 raise ValueError("Image required")
@@ -219,7 +219,7 @@ def create(driver = None):
             :rtype: ImageContainer
             :raises: RuntimeError, ValueError
             """
-            if self.cut is True:
+            if self.__cut is True:
                 raise RuntimeError('Element can be cut only once')
             if id is not None:
                 element = get_web_element_by_id(self.driver, id)
@@ -285,12 +285,12 @@ def create(driver = None):
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
 
-            if id is not None and self.cut is False:
+            if id is not None and self.__cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
                     raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
-            elif xpath is not None and self.cut is False:
+            elif xpath is not None and self.__cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
                 if my_element is None:
                     raise ValueError("There is no such element")
@@ -413,12 +413,12 @@ def create(driver = None):
             size = size if size is not None else 0
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
-            if id is not None and self.cut is False:
+            if id is not None and self.__cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
                     raise ValueError("There is no such element")
                 box = [i for i in get_web_element_box_size(my_element)]
-            elif xpath is not None and self.cut is False:
+            elif xpath is not None and self.__cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
                 if my_element is None:
                     raise ValueError("There is no such element")
@@ -474,12 +474,12 @@ def create(driver = None):
             else:
                 if image is None:
                     raise ValueError("Please provide filename of an image.")
-            if id is not None and self.cut is False:
+            if id is not None and self.__cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
                     raise ValueError("There is no such element")
                 box = get_web_element_box_size(my_element)
-            elif xpath is not None and self.cut is False:
+            elif xpath is not None and self.__cut is False:
                 my_element = get_web_element_by_xpath(self.driver, xpath)
                 if my_element is None:
                     raise ValueError("There is no such element")
@@ -628,7 +628,7 @@ def create(driver = None):
             :raises: RuntimeError, ValueError
             """
 
-            if self.cut is True:
+            if self.__cut is True:
                 raise RuntimeError('Element can be selected only once')
             if id is not None:
                 element = get_web_element_by_id(self.driver, id)
