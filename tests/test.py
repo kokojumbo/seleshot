@@ -69,30 +69,6 @@ class Test(unittest.TestCase):
         self.assertEqual(d.image.size, (350, 250))
         self.assertEqual(d.cut, True)
 
-    def test_draw_dot(self):
-        url = 'http://www.python.org'
-        self.i = self.s.get_screen(url)
-
-        self.assertNotEqual(self.i.draw_dot(id = 'submit', size = 1), None)
-        self.assertNotEqual(self.i.draw_dot(id = 'submit', size = 1).image, None)
-        self.assertEqual(self.i.draw_dot(id = 'submit', size = 1).cut, False)
-        self.assertEqual(self.i.draw_dot(id = 'submit', size = 1).cut_area(2, 2, 1, 1).cut, True)
-
-        self.assertNotEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1), None)
-        self.assertNotEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1).image, None)
-        self.assertEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1).cut, False)
-        self.assertEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1).cut_area(2, 2, 1, 1).cut, True)
-
-        self.assertNotEqual(self.i.draw_dot(coordinates = (2, 2), size = 1), None)
-        self.assertNotEqual(self.i.draw_dot(coordinates = (2, 2), size = 1).image, None)
-        self.assertEqual(self.i.draw_dot(coordinates = (2, 2), size = 1).cut, False)
-        self.assertEqual(self.i.draw_dot(coordinates = (2, 2), size = 1).cut_area(2, 2, 1, 1).cut, True)
-
-        self.assertRaises(Exception, self.i.draw_dot, 'wrongid')
-        self.assertRaises(Exception, self.i.draw_dot, None, ".//*[@id='wrongid']/ul/li")
-        self.assertRaises(Exception, self.i.draw_dot)
-        self.assertRaises(ValueError, self.i.draw_dot, None, None, None)
-
     def test_draw_frame(self):
         url = 'http://www.python.org'
         self.i = self.s.get_screen(url)
@@ -117,6 +93,89 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, self.i.draw_frame, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_frame)
         self.assertRaises(ValueError, self.i.draw_frame, None, None, None)
+        
+    def test_draw_dot(self):
+        url = 'http://www.python.org'
+        self.i = self.s.get_screen(url)
+
+        self.assertNotEqual(self.i.draw_dot(id = 'submit', size = 1), None)
+        self.assertNotEqual(self.i.draw_dot(id = 'submit', size = 1).image, None)
+        self.assertEqual(self.i.draw_dot(id = 'submit', size = 1).cut, False)
+        self.assertEqual(self.i.draw_dot(id = 'submit', size = 1).cut_area(2, 2, 1, 1).cut, True)
+
+        self.assertNotEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1), None)
+        self.assertNotEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1).image, None)
+        self.assertEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1).cut, False)
+        self.assertEqual(self.i.draw_dot(xpath = ".//*[@id='mainnav']/ul/li", size = 1).cut_area(2, 2, 1, 1).cut, True)
+
+        self.assertNotEqual(self.i.draw_dot(coordinates = (2, 2), size = 1), None)
+        self.assertNotEqual(self.i.draw_dot(coordinates = (2, 2), size = 1).image, None)
+        self.assertEqual(self.i.draw_dot(coordinates = (2, 2), size = 1).cut, False)
+        self.assertEqual(self.i.draw_dot(coordinates = (2, 2), size = 1).cut_area(2, 2, 1, 1).cut, True)
+
+        self.assertRaises(Exception, self.i.draw_dot, 'wrongid')
+        self.assertRaises(Exception, self.i.draw_dot, None, ".//*[@id='wrongid']/ul/li")
+        self.assertRaises(Exception, self.i.draw_dot)
+        self.assertRaises(ValueError, self.i.draw_dot, None, None, None)
+        
+    def test_draw_zoom(self):
+        url = 'http://www.python.org'
+        self.i = self.s.get_screen(url)
+        
+        self.assertNotEqual(self.i.draw_zoom(id = 'submit', zoom = 2), None)
+        self.assertNotEqual(self.i.draw_zoom(id = 'submit', zoom = 2).image, None)
+        self.assertEqual(self.i.draw_zoom(id = 'submit', zoom = 2).cut, False)
+        self.assertEqual(self.i.draw_zoom(id = 'submit', zoom = 2).cut_area(2, 2, 1, 1).cut, True)
+        
+        self.assertNotEqual(self.i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", zoom = 2), None)
+        self.assertNotEqual(self.i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", zoom = 2).image, None)
+        self.assertEqual(self.i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", zoom = 2).cut, False)
+        self.assertEqual(self.i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", zoom = 2).cut_area(2, 2, 1, 1).cut, True)
+        
+        self.assertRaises(Exception, self.i.draw_zoom, 'wrongid')
+        self.assertRaises(Exception, self.i.draw_zoom, None, ".//*[@id='wrongid']/ul/li")
+        self.assertRaises(Exception, self.i.draw_zoom)
+        pass
+    
+    def test_draw_image(self):
+        url = 'http://www.python.org'
+        self.i = self.s.get_screen(url)
+        
+        self.assertNotEqual(self.i.draw_image(id = 'submit'), None)
+        self.assertNotEqual(self.i.draw_image(id = 'submit').image, None)
+        self.assertEqual(self.i.draw_image(id = 'submit').cut, False)
+        self.assertEqual(self.i.draw_image(id = 'submit').cut_area(2, 2, 1, 1).cut, True)
+        
+        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li"), None)
+        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").image, None)
+        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").cut, False)
+        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").cut_area(2, 2, 1, 1).cut, True)
+        
+        self.assertRaises(Exception, self.i.draw_image, 'wrongid')
+        self.assertRaises(Exception, self.i.draw_image, None, ".//*[@id='wrongid']/ul/li")
+        self.assertRaises(Exception, self.i.draw_image)
+        self.assertRaises(ValueError, self.i.draw_image, None, None, None)
+        pass
+    
+    def test_draw_blur(self):
+        url = 'http://www.python.org'
+        self.i = self.s.get_screen(url)
+        
+        self.assertNotEqual(self.i.draw_blur(id = 'submit'), None)
+        self.assertNotEqual(self.i.draw_blur(id = 'submit').image, None)
+        self.assertEqual(self.i.draw_blur(id = 'submit').cut, False)
+        self.assertEqual(self.i.draw_blur(id = 'submit').cut_area(2, 2, 1, 1).cut, True)
+        
+        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li"), None)
+        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").image, None)
+        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").cut, False)
+        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").cut_area(2, 2, 1, 1).cut, True)
+        
+        self.assertRaises(Exception, self.i.draw_blur, 'wrongid')
+        self.assertRaises(Exception, self.i.draw_blur, None, ".//*[@id='wrongid']/ul/li")
+        self.assertRaises(Exception, self.i.draw_blur)
+        self.assertRaises(ValueError, self.i.draw_blur, None, None)
+        pass
 
     def test_save(self):
         url = 'http://www.python.org'
