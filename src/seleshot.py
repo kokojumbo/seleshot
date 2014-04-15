@@ -729,6 +729,6 @@ if __name__ == '__main__':
         s.get_screen(args.ids, args.xpath, args.path)
     else:
         s = create()
-        s.get_screen(args.url, args.ids, args.xpath, args.path).save("c:/shot_example.png").save("c:/shot_examplxe.png")
+        s.get_screen(args.url).save("/shot_example.png")
 
     s.close()
