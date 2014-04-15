@@ -440,6 +440,8 @@ def create(driver = None):
                 box[3] = box[3] + padding
             frame = ((box[0], box[1]), (box[2], box[1]), (box[2], box[3]), (box[0], box[3]), (box[0], box[1]))
             draw.line(frame, fill = color, width = size)
+            draw.line(((box[0] - size / 2, box[1]), (box[2] + size / 2, box[1])), fill = color, width = size)
+            draw.line(((box[2] + size / 2, box[3]), (box[0] - size / 2, box[3])), fill = color, width = size)
             return ImageContainer(new_image, self.driver)
 
         def draw_image(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), filename = None, image = None):
