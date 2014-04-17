@@ -287,7 +287,7 @@ def create(driver = None):
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
 
-            if padding is isinstance(padding, tuple) or len(padding) is not 2:
+            if not isinstance(padding, tuple) or len(padding) is not 2:
                 raise ValueError("Padding values are not correct.")
 
             if id is not None and self.__cut is False:
