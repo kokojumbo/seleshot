@@ -270,6 +270,36 @@ ScreenShot.create() function contains the following functions and classes:
         :rtype: boolean
 
 
+    .. function:: __draw_element(self, box, size_x, size_y, remainder_x, remainder_y, position, padding, new_image, image, ellipse = False, color = None):
+
+        Draw element - to draw image set ellipse on False.
+
+        :param box: Box of the element.
+        :type box: Tuple with 4 elements
+        :param size_x: Size from middle to the border on x
+        :type size_x: integer
+        :param size_y: Size from middle to the border on y
+        :type size_y: integer
+        :param remainder_x: Remainder of x scale
+        :type remainder_x: integer
+        :param remainder_y: Remainder of y scale
+        :type remainder_y: integer
+        :param position: position of an image
+        :type position: Position enum
+        :param padding: padding between dot and element
+        :type padding: tuple of integers (x, y)
+        :param new_image: New image of which will be create.
+        :type new_image: Image
+        :param image: Image which will be paste into another.
+        :type image: Image
+        :param ellipse: Draw dot.
+        :type ellipse: boolean
+        :param color: color of dot
+        :type color: color object or string
+        :returns: ImageContainer
+        :rtype: ImageContainer
+
+
 	.. function:: close(self):
 		
 		Close the ImageContainer object		
