@@ -283,8 +283,12 @@ def create(driver = None):
             """
             color = color if color is not None else "red"
             size = size if size is not None else 1
+            padding = padding if padding is not None else (0,0)
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
+
+            if padding is isinstance(padding, tuple) or len(padding) is not 2:
+                raise ValueError("Padding values are not correct.")
 
             if id is not None and self.__cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
