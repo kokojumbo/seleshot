@@ -19,12 +19,12 @@ class Test(unittest.TestCase):
 
     def test_get_screen(self):
         url = 'http://www.python.org'
-        i = self.s.get_screen(url)
-        self.assertNotEqual(i.driver, None)
-        self.assertNotEqual(i.image, None)
-        self.assertEqual(i.is_cut(), False)
-        self.assertEqual(isinstance(i.driver, WebDriver), True)
-        self.assertEqual(isinstance(i.image, Image.Image), True)
+        self.i = self.s.get_screen(url)
+        self.assertNotEqual(self.i.driver, None)
+        self.assertNotEqual(self.i.image, None)
+        self.assertEqual(self.i.is_cut(), False)
+        self.assertEqual(isinstance(self.i.driver, WebDriver), True)
+        self.assertEqual(isinstance(self.i.image, Image.Image), True)
 
         url = 'http:/x/www.pythonnotvalidaddress.org'
         self.assertRaises(ValueError, self.s.get_screen, url)
@@ -49,6 +49,7 @@ class Test(unittest.TestCase):
 
         ii = self.i.cut_element("submit")
         self.assertRaises(Exception, ii.cut_element, 'submit')
+        self.i.close()
 
     def test_cut_area(self):
         url = 'http://www.python.org'
@@ -68,6 +69,7 @@ class Test(unittest.TestCase):
         d = self.i.cut_area(200, 300, 250, 350)
         self.assertEqual(d.image.size, (350, 250))
         self.assertEqual(d.is_cut(), True)
+        self.i.close()
 
     def test_draw_frame(self):
         url = 'http://www.python.org'
@@ -93,6 +95,7 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, self.i.draw_frame, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_frame)
         self.assertRaises(ValueError, self.i.draw_frame, None, None, None)
+        self.i.close()
 
     def test_draw_dot(self):
         url = 'http://www.python.org'
@@ -117,6 +120,7 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, self.i.draw_dot, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_dot)
         self.assertRaises(ValueError, self.i.draw_dot, None, None, None)
+        self.i.close()
 
     def test_draw_zoom(self):
         url = 'http://www.python.org'
@@ -135,46 +139,46 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, self.i.draw_zoom, 'wrongid')
         self.assertRaises(Exception, self.i.draw_zoom, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_zoom)
+        self.i.close()
         pass
 
     def test_draw_image(self):
         url = 'http://www.python.org'
         self.i = self.s.get_screen(url)
+        img = Image.new('RGBA', (100, 100))
+        self.assertNotEqual(self.i.draw_image(id = 'submit', image = img), None)
+        self.assertEqual(self.i.draw_image(id = 'submit', image = img).is_cut(), False)
+        self.assertEqual(self.i.draw_image(id = 'submit', image = img).cut_area(2, 2, 1, 1).is_cut(), True)
 
-        self.assertNotEqual(self.i.draw_image(id = 'submit'), None)
-        self.assertNotEqual(self.i.draw_image(id = 'submit').image, None)
-        self.assertEqual(self.i.draw_image(id = 'submit').is_cut(), False)
-        self.assertEqual(self.i.draw_image(id = 'submit').cut_area(2, 2, 1, 1).is_cut(), True)
-
-        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li"), None)
-        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").image, None)
-        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").is_cut(), False)
-        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").cut_area(2, 2, 1, 1).is_cut(), True)
+        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li", image = img), None)
+        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li", image = img).image, None)
+        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li", image = img).is_cut(), False)
+        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li", image = img).cut_area(2, 2, 1, 1).is_cut(), True)
 
         self.assertRaises(Exception, self.i.draw_image, 'wrongid')
         self.assertRaises(Exception, self.i.draw_image, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_image)
         self.assertRaises(ValueError, self.i.draw_image, None, None, None)
+        self.i.close()
         pass
 
     def test_draw_blur(self):
         url = 'http://www.python.org'
         self.i = self.s.get_screen(url)
 
-        self.assertNotEqual(self.i.draw_blur(id = 'submit'), None)
         self.assertNotEqual(self.i.draw_blur(id = 'submit').image, None)
         self.assertEqual(self.i.draw_blur(id = 'submit').is_cut(), False)
         self.assertEqual(self.i.draw_blur(id = 'submit').cut_area(2, 2, 1, 1).is_cut(), True)
 
-        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li"), None)
-        self.assertNotEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").image, None)
-        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").is_cut(), False)
-        self.assertEqual(self.i.draw_image(xpath = ".//*[@id='mainnav']/ul/li").cut_area(2, 2, 1, 1).is_cut(), True)
+        self.assertNotEqual(self.i.draw_blur(xpath = ".//*[@id='mainnav']/ul/li").image, None)
+        self.assertEqual(self.i.draw_blur(xpath = ".//*[@id='mainnav']/ul/li").is_cut(), False)
+        self.assertEqual(self.i.draw_blur(xpath = ".//*[@id='mainnav']/ul/li").cut_area(2, 2, 1, 1).is_cut(), True)
 
-        self.assertRaises(Exception, self.i.draw_blur, 'wrongid')
-        self.assertRaises(Exception, self.i.draw_blur, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_blur)
+        self.assertRaises(ValueError, self.i.draw_blur, 'wrongid')
+        self.assertRaises(ValueError, self.i.draw_blur, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(ValueError, self.i.draw_blur, None, None)
+        self.i.close()
         pass
 
     def test_save(self):
@@ -216,6 +220,7 @@ class Test(unittest.TestCase):
         self.assertEqual(isinstance(img, Image.Image), True)
         del img
         os.remove('test.png')
+        self.i.close()
 
 
 if __name__ == "__main__":

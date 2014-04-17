@@ -6,6 +6,7 @@ Created on May 5, 2011
 
 @author: Radoslaw Palczynski, Grzegorz Bilewski et al.
 '''
+import os
 
 import sys
 import argparse
@@ -124,7 +125,7 @@ def create(driver = None):
         :returns: Screen shot
         :rtype: ImageContainer
         """
-        tempfd = tempfile.NamedTemporaryFile(mode = 'w+t', delete = False)
+        tempfd = tempfile.NamedTemporaryFile(mode = 'w+b', delete = False)
         driver.save_screenshot(tempfd.name)
         temp_filename = tempfd.name
         tempfd.close()
@@ -672,8 +673,9 @@ def create(driver = None):
             """
             Close the ImageContainer object
             """
+            if len(self.filename) > 0:
+                os.remove(self.filename)
             self.driver.close()
-
 
     #########################
     #          body         #

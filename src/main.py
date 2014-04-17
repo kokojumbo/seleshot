@@ -44,6 +44,6 @@ if __name__ == '__main__':
     i.draw_zoom(id = 'submit', padding = (0, 5), position = i.Position.OUTSIDE | i.Position.BOTTOM, zoom = 2).save("zoom4OB.png")
     i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.Position.OUTSIDE | i.Position.TOP, zoom = 2).save("zoom5OT.png")
     i.draw_zoom(id = 'touchnav-wrapper', padding = (15, 10), position = i.Position.OUTSIDE | i.Position.LEFT, zoom = 1.5).save("zoom6OL.png")
-
+    i.close()
 s.close()
 
