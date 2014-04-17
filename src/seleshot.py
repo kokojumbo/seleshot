@@ -196,7 +196,6 @@ def create(driver = None):
             :type cut: boolean
             :raises: ValueError
             """
-
             self.__cut = cut
             self.driver = driver
             if image is None:
@@ -254,8 +253,7 @@ def create(driver = None):
             new_image = self.image.crop(box)
             return ImageContainer(new_image, self.driver, True)
 
-        def draw_dot(self, id = None, xpath = None, coordinates = None, position = MIDDLE, padding = (0, 0),
-                     color = None, size = None):
+        def draw_dot(self, id = None, xpath = None, coordinates = None, position = MIDDLE, padding = (0, 0), color = None, size = None):
             """
             For id and xpath:
                 Draw a red dot on a given position of a given element.
@@ -285,10 +283,8 @@ def create(driver = None):
             padding = padding if padding is not None else (0, 0)
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
-
             if not isinstance(padding, tuple) or len(padding) is not 2:
                 raise ValueError("Padding values are not correct.")
-
             if id is not None and self.__cut is False:
                 my_element = get_web_element_by_id(self.driver, id)
                 if my_element is None:
@@ -304,15 +300,11 @@ def create(driver = None):
                        coordinates[1] - size + padding[1],
                        coordinates[0] + size + padding[0],
                        coordinates[1] + size + padding[1])
-
                 draw.ellipse(box, fill = color, outline = color)
-
                 return ImageContainer(new_image, self.driver)
-
             else:
                 del draw
                 raise ValueError("Please provide id or xpath or coordinates")
-
             return self.__draw_element(box, size, size, 0, 0, position, padding, new_image, None, ellipse = True, color = color)
 
         def draw_frame(self, id = None, xpath = None, coordinates = None, padding = None, color = None, size = None):
@@ -400,6 +392,8 @@ def create(driver = None):
             """
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
+            if not isinstance(padding, tuple) or len(padding) is not 2:
+                raise ValueError("Padding values are not correct.")
             if filename is not None:
                 image = Image.open(filename)
             else:
@@ -420,11 +414,8 @@ def create(driver = None):
                        coordinates[1] + padding[1],
                        coordinates[0] + padding[0] + image.size[0],
                        coordinates[1] + padding[1] + image.size[1])
-
-                # draw.ellipse(box, fill = color, outline = color)
                 new_image.paste(image, box)
                 return ImageContainer(new_image, self.driver)
-
             else:
                 del draw
                 raise ValueError("Please provide id or xpath or coordinates")
@@ -437,7 +428,6 @@ def create(driver = None):
                 remainder_x = 1
             if image.size[1] % 2 is not 0:
                 remainder_y = 1
-
             return self.__draw_element(box, size_x, size_y, remainder_x, remainder_y, position, padding, new_image, image, ellipse = False)
 
         def draw_zoom(self, id = None, xpath = None, coordinates = None, position = MIDDLE, padding = (0, 0), zoom = None):
@@ -483,7 +473,6 @@ def create(driver = None):
             :rtype: ImageContainer
             :raises: RuntimeError, ValueError
             """
-
             if self.__cut is True:
                 raise RuntimeError('Element can be selected only once')
             if id is not None:
@@ -625,7 +614,6 @@ def create(driver = None):
                     draw = ImageDraw.Draw(bigger_image)
                     draw.ellipse(image_box, fill = color, outline = color)
                     return ImageContainer(bigger_image, self.driver)
-
                 bigger_image.paste(image, image_box)
                 return ImageContainer(bigger_image, self.driver)
             else:

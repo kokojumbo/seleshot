@@ -119,7 +119,9 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, self.i.draw_dot, 'wrongid')
         self.assertRaises(Exception, self.i.draw_dot, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_dot)
-        self.assertRaises(ValueError, self.i.draw_dot, None, None, None)
+        self.assertRaises(ValueError, self.i.draw_dot, 'submit', None, None, self.i.MIDDLE, 0)
+        self.assertRaises(ValueError, self.i.draw_dot, 'submit', None, None, self.i.MIDDLE, (0, 0, 0))
+        self.assertRaises(ValueError, self.i.draw_dot, 'submit', None, None, self.i.MIDDLE, "wrong")
         self.i.close()
 
     def test_draw_zoom(self):
@@ -159,6 +161,9 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, self.i.draw_image, None, ".//*[@id='wrongid']/ul/li")
         self.assertRaises(Exception, self.i.draw_image)
         self.assertRaises(ValueError, self.i.draw_image, None, None, None)
+        self.assertRaises(ValueError, self.i.draw_image, 'submit', None, None, self.i.MIDDLE, 0)
+        self.assertRaises(ValueError, self.i.draw_image, 'submit', None, None, self.i.MIDDLE, (0, 0, 0))
+        self.assertRaises(ValueError, self.i.draw_image, 'submit', None, None, self.i.MIDDLE, "wrong")
         self.i.close()
         pass
 
