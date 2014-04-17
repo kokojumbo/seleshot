@@ -29,21 +29,21 @@ if __name__ == '__main__':
     i.draw_blur(id = 'submit').save('blur1.png')
     i.draw_blur(xpath = ".//*[@id='mainnav']/ul/li").save('blur2.png')
 
-    i.draw_dot(id = 'touchnav-wrapper', padding = (100, 200), size = 100, position = i.Position.MIDDLE).save("dot2M.png")
-    i.draw_dot(id = 'submit', padding = (10, -10), size = 3, position = i.Position.MIDDLE).save("dot3M.png")
+    i.draw_dot(id = 'touchnav-wrapper', padding = (100, 200), size = 100, position = i.MIDDLE).save("dot2M.png")
+    i.draw_dot(id = 'submit', padding = (10, -10), size = 3, position = i.MIDDLE).save("dot3M.png")
 
-    i.draw_image(id = 'submit', padding = (0, 0), position = i.Position.OUTSIDE | i.Position.BOTTOM, filename = 'cut1.png').save("image1OB.png")
-    i.draw_image(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.Position.OUTSIDE | i.Position.TOP, filename = 'cut2.png').save("image2OT.png")
-    i.draw_image(id = 'touchnav-wrapper', padding = (15, 10), position = i.Position.OUTSIDE | i.Position.LEFT, filename = 'cut2.png').save("image3OL.png")
-    i.draw_image(coordinates = (100, 200), padding = (0, 0), position = i.Position.OUTSIDE | i.Position.RIGHT, filename = 'cut1.png').save("image4Cor.png")
+    i.draw_image(id = 'submit', padding = (0, 0), position = i.OUTSIDE | i.BOTTOM, filename = 'cut1.png').save("image1OB.png")
+    i.draw_image(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.OUTSIDE | i.TOP, filename = 'cut2.png').save("image2OT.png")
+    i.draw_image(id = 'touchnav-wrapper', padding = (15, 10), position = i.OUTSIDE | i.LEFT, filename = 'cut2.png').save("image3OL.png")
+    i.draw_image(coordinates = (100, 200), padding = (0, 0), position = i.OUTSIDE | i.RIGHT, filename = 'cut1.png').save("image4Cor.png")
 
-    i.draw_zoom(id = 'submit', padding = (0, 5), position = i.Position.OUTSIDE | i.Position.BOTTOM, zoom = 0.5).save("zoom1OB.png")
-    i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.Position.OUTSIDE | i.Position.TOP, zoom = 0.5).save("zoom2OT.png")
-    i.draw_zoom(id = 'touchnav-wrapper', padding = (15, 10), position = i.Position.OUTSIDE | i.Position.LEFT, zoom = 0.5).save("zoom3OL.png")
+    i.draw_zoom(id = 'submit', padding = (0, 5), position = i.OUTSIDE | i.BOTTOM, zoom = 0.5).save("zoom1OB.png")
+    i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.OUTSIDE | i.TOP, zoom = 0.5).save("zoom2OT.png")
+    i.draw_zoom(id = 'touchnav-wrapper', padding = (15, 10), position = i.OUTSIDE | i.LEFT, zoom = 0.5).save("zoom3OL.png")
 
-    i.draw_zoom(id = 'submit', padding = (0, 5), position = i.Position.OUTSIDE | i.Position.BOTTOM, zoom = 2).save("zoom4OB.png")
-    i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.Position.OUTSIDE | i.Position.TOP, zoom = 2).save("zoom5OT.png")
-    i.draw_zoom(id = 'touchnav-wrapper', padding = (15, 10), position = i.Position.OUTSIDE | i.Position.LEFT, zoom = 1.5).save("zoom6OL.png")
+    i.draw_zoom(id = 'submit', padding = (0, 5), position = i.OUTSIDE | i.BOTTOM, zoom = 2).save("zoom4OB.png")
+    i.draw_zoom(xpath = ".//*[@id='mainnav']/ul/li", padding = (15, 10), position = i.OUTSIDE | i.TOP, zoom = 2).save("zoom5OT.png")
+    i.draw_zoom(id = 'touchnav-wrapper', padding = (15, 10), position = i.OUTSIDE | i.LEFT, zoom = 1.5).save("zoom6OL.png")
     i.close()
 s.close()
 

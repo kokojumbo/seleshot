@@ -84,9 +84,7 @@ ScreenShot.create() function contains the following functions and classes:
 
 .. class:: ImageContainer(object):
 
-	.. class:: Position():
-	
-		Enumeration of possible positions:
+    Enumeration of possible positions:
 
 		* MIDDLE
 		* INSIDE
@@ -96,11 +94,12 @@ ScreenShot.create() function contains the following functions and classes:
 		* RIGHT
 		* TOP
 		* BOTTOM
-		
+
 		Example of usage::
-		
-		position = Position.OUTSIDE | Position.LEFT
-			
+
+		position = ImageContainer.OUTSIDE | ImageContainer.LEFT
+
+
 	.. function:: __init__(self, image, driver, cut = False):
 		
 		Constructor for ImageContainer.

@@ -158,32 +158,31 @@ def create(driver = None):
             self.driver.close()
 
     class ImageContainer(object):
+        """
+        Enumeration of possible positions:
 
-        class Position():
-            """
-            Enumeration of possible positions:
+        * MIDDLE
+        * INSIDE
+        * OUTSIDE
+        * BORDER
+        * LEFT
+        * RIGHT
+        * TOP
+        * BOTTOM
 
-            * MIDDLE
-            * INSIDE
-            * OUTSIDE
-            * BORDER
-            * LEFT
-            * RIGHT
-            * TOP
-            * BOTTOM
+        Example of usage::
 
-            Example of usage::
+        position = Position.OUTSIDE | Position.LEFT
+        """
 
-            position = Position.OUTSIDE | Position.LEFT
-            """
-            MIDDLE = 1
-            INSIDE = 2
-            OUTSIDE = 4
-            BORDER = 8
-            LEFT = 16
-            RIGHT = 32
-            TOP = 64
-            BOTTOM = 128
+        MIDDLE = 1
+        INSIDE = 2
+        OUTSIDE = 4
+        BORDER = 8
+        LEFT = 16
+        RIGHT = 32
+        TOP = 64
+        BOTTOM = 128
 
         def __init__(self, image, driver, cut = False):
             """
@@ -255,7 +254,7 @@ def create(driver = None):
             new_image = self.image.crop(box)
             return ImageContainer(new_image, self.driver, True)
 
-        def draw_dot(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0),
+        def draw_dot(self, id = None, xpath = None, coordinates = None, position = MIDDLE, padding = (0, 0),
                      color = None, size = None):
             """
             For id and xpath:
@@ -283,7 +282,7 @@ def create(driver = None):
             """
             color = color if color is not None else "red"
             size = size if size is not None else 1
-            padding = padding if padding is not None else (0,0)
+            padding = padding if padding is not None else (0, 0)
             new_image = self.image.copy()
             draw = ImageDraw.Draw(new_image)
 
@@ -334,29 +333,29 @@ def create(driver = None):
             border_top = 0
             border_bottom = 0
 
-            if position == ImageContainer.Position.INSIDE | ImageContainer.Position.LEFT:
+            if position == ImageContainer.INSIDE | ImageContainer.LEFT:
                 inside_left = -border_x + size
-            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.RIGHT:
+            elif position == ImageContainer.INSIDE | ImageContainer.RIGHT:
                 inside_right = border_x - size
-            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.TOP:
+            elif position == ImageContainer.INSIDE | ImageContainer.TOP:
                 inside_top = -border_y + size
-            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.BOTTOM:
+            elif position == ImageContainer.INSIDE | ImageContainer.BOTTOM:
                 inside_bottom = border_y - size
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.LEFT:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.LEFT:
                 outside_left = -border_x - size
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.RIGHT:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.RIGHT:
                 outside_right = border_x + size
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.TOP:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.TOP:
                 outside_top = -border_y - size
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.BOTTOM:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.BOTTOM:
                 outside_bottom = border_y + size
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.LEFT:
+            elif position == ImageContainer.BORDER | ImageContainer.LEFT:
                 border_left = -border_x
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.RIGHT:
+            elif position == ImageContainer.BORDER | ImageContainer.RIGHT:
                 border_right = border_x
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.TOP:
+            elif position == ImageContainer.BORDER | ImageContainer.TOP:
                 border_top = -border_y
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.BOTTOM:
+            elif position == ImageContainer.BORDER | ImageContainer.BOTTOM:
                 border_bottom = border_y
 
             dot_box = (
@@ -449,7 +448,7 @@ def create(driver = None):
             draw.line(((box[2] + size / 2, box[3]), (box[0] - size / 2, box[3])), fill = color, width = size)
             return ImageContainer(new_image, self.driver)
 
-        def draw_image(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), filename = None, image = None):
+        def draw_image(self, id = None, xpath = None, coordinates = None, position = MIDDLE, padding = (0, 0), filename = None, image = None):
             """
             For id and xpath:
                 Draw an image on a given position of a given element.
@@ -534,29 +533,29 @@ def create(driver = None):
             border_top = 0
             border_bottom = 0
 
-            if position == ImageContainer.Position.INSIDE | ImageContainer.Position.LEFT:
+            if position == ImageContainer.INSIDE | ImageContainer.LEFT:
                 inside_left = -border_x + size_x
-            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.RIGHT:
+            elif position == ImageContainer.INSIDE | ImageContainer.RIGHT:
                 inside_right = border_x - size_x
-            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.TOP:
+            elif position == ImageContainer.INSIDE | ImageContainer.TOP:
                 inside_top = -border_y + size_y
-            elif position == ImageContainer.Position.INSIDE | ImageContainer.Position.BOTTOM:
+            elif position == ImageContainer.INSIDE | ImageContainer.BOTTOM:
                 inside_bottom = border_y - size_y
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.LEFT:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.LEFT:
                 outside_left = -border_x - size_x
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.RIGHT:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.RIGHT:
                 outside_right = border_x + size_x
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.TOP:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.TOP:
                 outside_top = -border_y - size_y
-            elif position == ImageContainer.Position.OUTSIDE | ImageContainer.Position.BOTTOM:
+            elif position == ImageContainer.OUTSIDE | ImageContainer.BOTTOM:
                 outside_bottom = border_y + size_y
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.LEFT:
+            elif position == ImageContainer.BORDER | ImageContainer.LEFT:
                 border_left = -border_x
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.RIGHT:
+            elif position == ImageContainer.BORDER | ImageContainer.RIGHT:
                 border_right = border_x
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.TOP:
+            elif position == ImageContainer.BORDER | ImageContainer.TOP:
                 border_top = -border_y
-            elif position == ImageContainer.Position.BORDER | ImageContainer.Position.BOTTOM:
+            elif position == ImageContainer.BORDER | ImageContainer.BOTTOM:
                 border_bottom = border_y
 
             image_box = (
@@ -591,7 +590,7 @@ def create(driver = None):
                 new_image.paste(image, image_box)
                 return ImageContainer(new_image, self.driver)
 
-        def draw_zoom(self, id = None, xpath = None, coordinates = None, position = Position.MIDDLE, padding = (0, 0), zoom = None):
+        def draw_zoom(self, id = None, xpath = None, coordinates = None, position = MIDDLE, padding = (0, 0), zoom = None):
             """
             For id and xpath:
                 Draw a zoomed image on a given position of a given element.
